@@ -17,3 +17,63 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+class Board:
+    # создание поля
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.board = [[0] * self.width for _ in range(self.height)]
+        # значения по умолчанию
+        self.left = 10
+        self.top = 10
+        self.cell_size_x = 30
+        self.cell_size_y = 30
+
+    def render(self, screen):
+        for y in range(self.height):
+            for x in range(self.width):
+                pygame.draw.rect(screen, pygame.Color("white"),
+                                 (x * self.cell_size_x + self.left, y * self.cell_size_y + self.top,
+                                  self.cell_size_x, self.cell_size_y), 1)
+
+    # настройка внешнего вида
+    def set_view(self, left, top, cell_size_x, cell_size_y):
+        self.left = left
+        self.top = top
+        self.cell_size_x = cell_size_x
+        self.cell_size_y = cell_size_y
+
+    def get_cell(self, mouse_pos):
+        x_click, y_click = mouse_pos
+        x_cell = (x_click - self.left) // self.cell_size_x
+        y_cell = (y_click - self.top) // self.cell_size_y
+        if x_cell < 0 or x_cell >= self.width or y_cell < 0 or y_cell >= self.height:
+            return None
+        return x_cell, y_cell
+
+    def get_click(self, mouse_pos, screen):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return self.on_click(cell, screen)
+
+    def on_click(self, cell, screen):
+        #print(cell)
+        #print(bool(self.board[cell[1]][cell[0]]))
+        if not bool(self.board[cell[1]][cell[0]]):
+            self.board[cell[1]][cell[0]] = 1
+            rect = (cell[0] * self.cell_size_x + self.left, cell[1] * self.cell_size_y + self.top, self.cell_size_x, self.cell_size_y)
+            rect = pygame.Rect(rect)
+            return Plant(screen, name='carrot', rect=rect, image=load_image('carrot_1.png'), time=10, first_image=load_image('carrot_2.png'))
+
+
+class Plant:
+    def __init__(self, screen, name, rect, time, image=None, count=0, first_image=None):
+        self.screen = screen
+        self.name = name
+        self.rect = rect
+        self. image = image
+        self.count = count
+        self.time = time
+        self.first_image = first_image
