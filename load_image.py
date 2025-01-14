@@ -53,27 +53,77 @@ class Board:
             return None
         return x_cell, y_cell
 
-    def get_click(self, mouse_pos, screen):
+    def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
         if cell:
-            return self.on_click(cell, screen)
+            self.on_click(cell)
 
-    def on_click(self, cell, screen):
+    def on_click(self, cell):
+        print(cell)
+
+
+class Field(Board):
+    # создание поля
+    def __init__(self, width, height):
+        super().__init__(width, height)
+        self.board = [[0] * self.width for _ in range(self.height)]
+        # значения по умолчанию
+        self.left = 10
+        self.top = 10
+        self.cell_size_x = 30
+        self.cell_size_y = 30
+
+
+    def get_click(self, mouse_pos, screen, list, props):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return self.on_click(cell, screen, list, props)
+
+    def on_click(self, cell, screen, list, props):
         #print(cell)
         #print(bool(self.board[cell[1]][cell[0]]))
         if not bool(self.board[cell[1]][cell[0]]):
             self.board[cell[1]][cell[0]] = 1
             rect = (cell[0] * self.cell_size_x + self.left, cell[1] * self.cell_size_y + self.top, self.cell_size_x, self.cell_size_y)
             rect = pygame.Rect(rect)
-            return Plant(screen, name='carrot', rect=rect, image=load_image('carrot_1.png'), time=10, first_image=load_image('carrot_2.png'))
+            return (Plant(screen, props[0], rect=rect, image=load_image(props[1]), first_image=load_image(props[2]),
+                          time=props[3], id=len(list) - 1),
+                    cell)
+        elif list[cell].set_time():
+            self.board[cell[1]][cell[0]] = 0
+            del list[cell]
 
 
 class Plant:
-    def __init__(self, screen, name, rect, time, image=None, count=0, first_image=None):
+    def __init__(self, screen, name, rect, time, id, image=None, count=0, first_image=None, FPS=60):
         self.screen = screen
         self.name = name
         self.rect = rect
-        self. image = image
+        self.second_image = image
         self.count = count
         self.time = time
         self.first_image = first_image
+        self.image = first_image
+        self.isGrow = True
+        self.FPS = FPS
+        self.id = id
+
+    def set_time(self):
+        if self.count // self.FPS >= self.time:
+            self.image = self.second_image
+            self.isGrow = False
+            return True
+        return False
+
+class Inventory(Board):
+    def __init__(self, width, height, plants):
+        super().__init__(width, height)
+        self.plants = plants
+
+    def on_click(self, cell):
+        return self.plants[cell[0] + cell[1] * self.width]
+
+    def get_click(self, mouse_pos):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return self.on_click(cell)
