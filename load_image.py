@@ -121,7 +121,10 @@ class Inventory(Board):
         self.plants = plants
 
     def on_click(self, cell):
-        return self.plants[cell[0] + cell[1] * self.width]
+        try:
+            return self.plants[cell[0] + cell[1] * self.width]
+        except IndexError:
+            pass
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)

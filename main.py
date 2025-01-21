@@ -4,12 +4,19 @@ from load_image import load_image, Field, Board, Inventory
 pygame.init()
 
 def main():
-    wheat = ['wheat', 'wheat_2.png', 'wheat_1.png', 3, 'wheap_grains.png']
-    carrot = ['carrot', 'carrot_1.png', 'carrot_2.png', 5, 'carrot_sprout.png']
+    wheat = ['wheat', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
+    carrot = ['carrot', 'carrot/carrot_1.png', 'carrot/carrot_2.png', 5, 'carrot/carrot_sprout.png']
+    corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 5, 'corn/corn.png']
+    pumpkin = ['pumpkin', 'pumpkin/pumpkin2.png', 'pumpkin/pumpkin1.png', 5, 'pumpkin/pumpkin.png']
+    sunflower = ['sunflower', 'sunflower/sunflower2.png', 'sunflower/sunflower1.png', 5, 'sunflower/sunflower.png']
+    tomato = ['tomato', 'tomato/tomato2.png', 'tomato/tomato1.png', 5, 'tomato/tomato.png']
+    cucumber = ['cucumber', 'cucumber/cucumber2.png', 'cucumber/cucumber1.png', 5, 'cucumber/cucumber.png']
 
-    plants_for_inventory = [wheat.copy(), carrot.copy()]
+    plants_for_inventory = [wheat.copy(), carrot.copy(), corn.copy(), pumpkin.copy(), sunflower.copy(), tomato.copy(),
+                            cucumber.copy()]
 
-    plants_images = ['wheap_grains.png', 'carrot_sprout.png']
+    plants_images = ['wheap/wheap_grains.png', 'carrot/carrot_sprout.png', 'corn/corn.png', 'pumpkin/pumpkin.png',
+                     'sunflower/sunflower.png', 'tomato/tomato.png', 'cucumber/cucumber.png']
 
     main_plant = wheat.copy()
 
@@ -102,12 +109,13 @@ def main():
             for x in range(inventory.width):
                 for y in range(inventory.height):
                     try:
-                        dis.blit(load_image(plants_images[x + y * inventory.height]) ,(x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
+                        dis.blit(load_image(plants_images[x + y * inventory.width]) ,(x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
                     except IndexError:
                         pass
 
         if pygame.mouse.get_pressed()[0] and is_inventory:
-            main_plant = inventory.get_click(pygame.mouse.get_pos())
+            if inventory.get_click(pygame.mouse.get_pos()):
+                main_plant = inventory.get_click(pygame.mouse.get_pos())
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
