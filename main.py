@@ -1,5 +1,5 @@
 import pygame
-from load_image import load_image, Field, Board, Inventory, Settings
+from load_image import load_image, Field, Board, Inventory, Settings, Information, Market, Offer
 
 pygame.init()
 
@@ -52,9 +52,20 @@ def main():
     inventory.set_view(275, 100, 270, 300)
     settings = Settings(1, 1)
     settings.set_view(1500, 750, 148, 148)
+    info = Information(1, 1)
+    info.set_view(1500, 750, 148, 148)
+    offer1 = Offer(1, 1)
+    offer1.set_view(528, 416, 720, 60)
+    offer2 = Offer(1, 1)
+    offer2.set_view(528, 516, 720, 60)
+    offer3 = Offer(1, 1)
+    offer3.set_view(528, 616, 720, 60)
+
     gameplay = True
     is_inventory = False
     is_settings = False
+    is_info = False
+    is_market = False
 
 
     while run:
@@ -111,8 +122,7 @@ def main():
 
         dis.blit(player, (player_x, player_y))
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
-        dis.blit(load_image('coin.png'), (dis_x - 630, 0))
-        dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 50))
+
 
         if is_inventory:
             dis.blit(load_image('inventory.png'), (0, 0))
@@ -127,6 +137,19 @@ def main():
             dis.blit(load_image('settings.png'), (60, 30))
             dis.blit(load_image('exit.png'), (1500, 750))
 
+        if is_market:
+            dis.blit(load_image('market.png'), (0, 0))
+            dis.blit(load_image('place.png'), (dis_x - 1550, -200))
+            dis.blit(load_image('place.png'), (dis_x - 1550, -100))
+            dis.blit(load_image('place.png'), (dis_x - 1550, 0))
+
+
+        if is_info:
+            dis.blit(load_image('info.png'), (60, 30))
+            dis.blit(load_image('coin.png'), (dis_x - 630, 50))
+            print(balance)
+            dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 100))
+
         if pygame.mouse.get_pressed()[0] and is_inventory:
             if inventory.get_click(pygame.mouse.get_pos()):
                 main_plant = inventory.get_click(pygame.mouse.get_pos())
@@ -134,6 +157,8 @@ def main():
         if pygame.mouse.get_pressed()[0] and is_settings:
             if settings.get_click(pygame.mouse.get_pos()):
                 run = False
+
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -156,6 +181,39 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_e and not is_inventory:
                 gameplay = False
                 is_inventory = True
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_t and is_market:
+                gameplay = True
+                is_market = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_t and not is_market:
+                gameplay = False
+                is_market = True
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and is_info:
+                gameplay = True
+                is_info = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and not is_info:
+                gameplay = False
+                is_info = True
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
+                if offer1.f(pygame.mouse.get_pos()):
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 1))
+                    f.close()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
+                if offer2.f(pygame.mouse.get_pos()):
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 10))
+                    f.close()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
+                if offer3.f(pygame.mouse.get_pos()):
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 100))
+                    f.close()
+
 
         pygame.display.flip()
         clock.tick(FPS)

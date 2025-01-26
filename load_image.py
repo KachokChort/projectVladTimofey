@@ -115,6 +115,8 @@ class Plant:
             return True
         return False
 
+
+
 class Inventory(Board):
     def __init__(self, width, height, plants):
         super().__init__(width, height)
@@ -128,6 +130,7 @@ class Inventory(Board):
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
+        print(cell)
         if cell:
             return self.on_click(cell)
 
@@ -141,9 +144,24 @@ class Settings(Board):
         if cell:
             return cell
 
-class Market1:
-    def __init__(self, width, height, offers):
+class Market(Board):
+    def __init__(self, width, height):
         super().__init__(width, height)
-        self.offers = offers
 
+
+    def get_click(self, mouse_pos):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return cell
+class Offer(Board):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+
+    def f(self, mouse_pos):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return True
+class Information(Board):
+    def __init__(self, width, height):
+        super().__init__(width, height)
 
