@@ -42,6 +42,7 @@ def main():
     player = load_image('player.png')
 
     font = pygame.font.SysFont('Arial', 20)
+    font1 = pygame.font.SysFont('Arial', 70)
 
     field = Field(10, 8)
     field.set_view(60, 50, 65, 67)
@@ -50,13 +51,18 @@ def main():
     inventory = Inventory(5, 3, plants_for_inventory)
     inventory.set_view(275, 100, 270, 300)
     settings = Settings(1, 1)
-    settings.set_view(350, 50, 800, 403)
+    settings.set_view(1500, 750, 148, 148)
     gameplay = True
     is_inventory = False
     is_settings = False
 
 
     while run:
+        with open('balance.txt', 'r', encoding='utf-8') as f_in:
+            balance = f_in.readlines()
+        balance = "".join(balance)
+        balance = int(balance)
+
         count += 1
         player_speed = 20
 
@@ -105,6 +111,8 @@ def main():
 
         dis.blit(player, (player_x, player_y))
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
+        dis.blit(load_image('coin.png'), (dis_x - 630, 0))
+        dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 50))
 
         if is_inventory:
             dis.blit(load_image('inventory.png'), (0, 0))
@@ -116,8 +124,8 @@ def main():
                     except IndexError:
                         pass
         if is_settings:
-            dis.blit(load_image('settings.png'), (250, 50))
-            dis.blit(load_image('exit.png'), (350, 50))
+            dis.blit(load_image('settings.png'), (60, 30))
+            dis.blit(load_image('exit.png'), (1500, 750))
 
         if pygame.mouse.get_pressed()[0] and is_inventory:
             if inventory.get_click(pygame.mouse.get_pos()):

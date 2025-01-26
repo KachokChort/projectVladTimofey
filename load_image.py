@@ -140,3 +140,10 @@ class Settings(Board):
         print(cell)
         if cell:
             return cell
+
+class Market1:
+    def __init__(self, width, height, offers):
+        super().__init__(width, height)
+        self.offers = offers
+
+
