@@ -163,7 +163,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and is_settings:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and is_settings and not is_inventory:
                 is_settings = False
                 gameplay = True
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and not is_settings:
@@ -182,14 +182,14 @@ def main():
                 gameplay = False
                 is_inventory = True
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_t and is_market:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_t and is_market and not is_inventory:
                 gameplay = True
                 is_market = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_t and not is_market:
                 gameplay = False
                 is_market = True
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and is_info:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and is_info and not is_inventory:
                 gameplay = True
                 is_info = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and not is_info:
