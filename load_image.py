@@ -3,6 +3,12 @@ import os
 import sys
 
 
+class Resours:
+    def __init__(self, resourses):
+        self.resourses = resourses
+
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
     # если файл не существует, то выходим
@@ -91,6 +97,7 @@ class Field(Board):
                           time=props[3], id=len(list) - 1),
                     cell)
         elif list[cell].set_time():
+            resource.resourses[list[cell].name] += 1
             self.board[cell[1]][cell[0]] = 0
             del list[cell]
 
@@ -182,3 +189,6 @@ class Animal:
             self.isGrow = False
             return True
         return False
+
+resources = {'carrot': 0,'corn': 0,'cucumber': 0,'pumpkin': 0,'sunflower': 0,'tomato': 0,'wheap': 0,'egg': 0}
+resource = Resours(resources)

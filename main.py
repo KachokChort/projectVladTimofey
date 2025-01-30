@@ -1,11 +1,11 @@
 import pygame
-from load_image import load_image, Field, Board, Inventory, Animal_House
+from load_image import load_image, Field, Board, Inventory, Animal_House, resource
 
 pygame.init()
 
 
 def main():
-    wheat = ['wheat', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
+    wheat = ['wheap', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
     carrot = ['carrot', 'carrot/carrot_1.png', 'carrot/carrot_2.png', 5, 'carrot/carrot_sprout.png']
     corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 5, 'corn/corn.png']
     pumpkin = ['pumpkin', 'pumpkin/pumpkin2.png', 'pumpkin/pumpkin1.png', 5, 'pumpkin/pumpkin.png']
@@ -20,6 +20,8 @@ def main():
                      'sunflower/sunflower.png', 'tomato/tomato.png', 'cucumber/cucumber.png']
 
     main_plant = wheat.copy()
+
+    all_products = ['carrot', 'corn', 'cucumber', 'pumpkin', 'sunflower', 'tomato', 'wheap', 'egg']
 
     clock = pygame.time.Clock()
     run = True
@@ -44,6 +46,7 @@ def main():
 
     font = pygame.font.SysFont('Arial', 20)
     font2 = pygame.font.SysFont('Arial', 80)
+    font3 = pygame.font.SysFont('Arial', 40)
 
     field = Field(10, 8)
     field.set_view(60, 50, 65, 67)
@@ -53,10 +56,13 @@ def main():
     inventory.set_view(275, 100, 270, 300)
     chiken_house = Animal_House(4, 2)
     chiken_house.set_view(150, 120, 400, 400)
+    real_inventory = Inventory(8, 4, plants_for_inventory)
+    real_inventory.set_view(10, 10, 238, 265)
 
     gameplay = True
     is_inventory = False
     is_chiken_house = False
+    is_real_inventory = False
 
     while run:
         # переменные, которые нужно изменять во время игры
@@ -91,7 +97,7 @@ def main():
             elif player_x > 0:
                 player_x -= player_speed
 
-        # отловка нажатий на дма зверей
+        # отловка нажатий на дoма зверей
         if pygame.mouse.get_pressed()[0] and gameplay:
             if chiken_house_rect.collidepoint(pygame.mouse.get_pos()):
                 # print('yes')
@@ -128,13 +134,17 @@ def main():
                     chiken_image = load_image(chik.image)
                     chik.count += 1
                     if chik.count < chik.FPS * chik.time:
-                        dis.blit(font2.render(f'{chik.time - chik.count // FPS - 1}.{FPS - chik.count % FPS}', False, 'black'), (
-                            i * chiken_house.cell_size_x + chiken_house.left,
-                            j * chiken_house.cell_size_y + chiken_house.top))
+                        dis.blit(font2.render(f'{chik.time - chik.count // FPS - 1}.{FPS - chik.count % FPS}', False,
+                                              'black'), (
+                                     i * chiken_house.cell_size_x + chiken_house.left,
+                                     j * chiken_house.cell_size_y + chiken_house.top))
                     else:
                         chik.image = chik.first_image
+                    if chik.count == chik.FPS * chik.time:
+                        resource.resourses['egg'] += 1
                     dis.blit(chiken_image, (
-                    i * chiken_house.cell_size_x + chiken_house.left, j * chiken_house.cell_size_y + chiken_house.top))
+                        i * chiken_house.cell_size_x + chiken_house.left,
+                        j * chiken_house.cell_size_y + chiken_house.top))
             if pygame.mouse.get_pressed()[0]:
                 chiken_house.get_click(pygame.mouse.get_pos())
 
@@ -165,9 +175,36 @@ def main():
             if pl and pl[0] and pl[1]:
                 plants[pl[1]] = pl[0]
 
+        # отображение реал инвенторя
+        if is_real_inventory:
+            dis.blit(load_image('fon_inventory.png'), (0, 0))
+            real_inventory.render(dis)
+            for x in range(real_inventory.width):
+                for y in range(real_inventory.height):
+                    try:
+                        print(resource.resourses[all_products[x + y * real_inventory.width]])
+                        dis.blit(
+                            font3.render(
+                                f'{all_products[x + y * real_inventory.width]}',
+                                False, 'black'), (
+                                x * real_inventory.cell_size_x + real_inventory.left,
+                                y * real_inventory.cell_size_y + real_inventory.top))
+                        dis.blit(
+                            font3.render(
+                                f'{resource.resourses[all_products[x + y * real_inventory.width]]}',
+                                False, 'black'), (
+                                x * real_inventory.cell_size_x + real_inventory.left,
+                                y * real_inventory.cell_size_y + real_inventory.top + 40))
+                    except TypeError:
+                        pass
+                    except IndexError:
+                        pass
+
         # отловка событий
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                for i in resource.resourses:
+                    print(f'{i}: {resource.resourses[i]}')
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and gameplay and main_plant:
                 pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
@@ -184,8 +221,15 @@ def main():
                 gameplay = True
                 is_inventory = False
                 is_chiken_house = False
+                is_real_inventory = False
                 chiken_house = Animal_House(4, 2)
                 chiken_house.set_view(150, 120, 400, 400)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_b and is_real_inventory:
+                gameplay = True
+                is_real_inventory = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_b and not is_real_inventory and gameplay:
+                gameplay = False
+                is_real_inventory = True
 
         pygame.display.flip()
         clock.tick(FPS)
