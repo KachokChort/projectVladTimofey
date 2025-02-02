@@ -57,7 +57,7 @@ def main():
     inventory = Inventory(5, 3, plants_for_inventory)
     inventory.set_view(275, 100, 270, 300)
     settings = Settings(1, 1)
-    settings.set_view(1500, 750, 148, 148)
+    settings.set_view(700, 700, 559, 215)
     info = Information(1, 1)
     info.set_view(1500, 750, 148, 148)
     offer1 = Offer(1, 1)
@@ -165,7 +165,7 @@ def main():
                         pass
         if is_settings:
             dis.blit(load_image('settings.png'), (60, 30))
-            dis.blit(load_image('exit.png'), (1500, 750))
+            dis.blit(load_image('exit.png'), (700, 700))
 
         if is_market:
             with open('ofersss.txt', 'r', encoding='utf-8') as f_in:
