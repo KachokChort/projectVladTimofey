@@ -1,0 +1,3 @@
+place3.png
+place8.png
+place2.png

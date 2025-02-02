@@ -1,1 +1,1 @@
-monets=0;carrots=0;wheat=0;bread=0;rep=0;watermelon=0;potato=0;dragon_fruit=0
+carrot=0&corn=0&cucumber=0&pumpkin=0&sunflower=0&tomato=0&wheap=0

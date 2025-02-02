@@ -1,10 +1,12 @@
 import pygame
-from load_image import load_image, Field, Board, Inventory, Settings, Information, Market, Offer
+import random
+from load_image import load_image, Field, Board, Inventory, Settings, Information, Market, Offer, resource
 
 pygame.init()
 
+
 def main():
-    wheat = ['wheat', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
+    wheat = ['wheap', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
     carrot = ['carrot', 'carrot/carrot_1.png', 'carrot/carrot_2.png', 5, 'carrot/carrot_sprout.png']
     corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 5, 'corn/corn.png']
     pumpkin = ['pumpkin', 'pumpkin/pumpkin2.png', 'pumpkin/pumpkin1.png', 5, 'pumpkin/pumpkin.png']
@@ -20,10 +22,11 @@ def main():
 
     main_plant = wheat.copy()
 
+    all_products = ['carrot', 'corn', 'cucumber', 'pumpkin', 'sunflower', 'tomato', 'wheap', 'egg']
+
     clock = pygame.time.Clock()
     run = True
     FPS = 60
-
 
     infoObject = pygame.display.Info()
     dis_x = infoObject.current_w
@@ -43,6 +46,9 @@ def main():
 
     font = pygame.font.SysFont('Arial', 20)
     font1 = pygame.font.SysFont('Arial', 70)
+    font = pygame.font.SysFont('Arial', 20)
+    font2 = pygame.font.SysFont('Arial', 80)
+    font3 = pygame.font.SysFont('Arial', 40)
 
     field = Field(10, 8)
     field.set_view(60, 50, 65, 67)
@@ -61,14 +67,37 @@ def main():
     offer3 = Offer(1, 1)
     offer3.set_view(528, 616, 720, 60)
 
+    real_inventory = Inventory(8, 4, plants_for_inventory)
+    real_inventory.set_view(10, 10, 238, 265)
+
     gameplay = True
     is_inventory = False
     is_settings = False
     is_info = False
     is_market = False
+    is_real_inventory = False
+    is_buy1 = False
+    is_buy2 = False
+    is_buy3 = False
 
+    with open('offers.txt', 'r', encoding='utf-8') as f_in:
+        ofer = f_in.readlines()
+    ofer = "".join(ofer)
+    ofer = ofer.split()
+
+    print(ofer)
+    with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
+        inventory1 = f_in.readlines()
+    inventory1 = "".join(inventory1)
+    inventory1 = inventory1.split('&')
+    products1 = []
+    numproducts = []
+    for i in inventory1:
+        products1.append(i.split('=')[0])
+        numproducts.append(int(i.split('=')[1]))
 
     while run:
+
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()
         balance = "".join(balance)
@@ -109,7 +138,8 @@ def main():
             plant = plants[plant]
             if plant:
                 if plant.time - plant.count // FPS > 0:
-                    dis.blit(font.render(f'{plant.time - plant.count // FPS}', False, 'white'), (plant.rect[0] + 30 + fon_x, plant.rect[1] + 37 + fon_y))
+                    dis.blit(font.render(f'{plant.time - plant.count // FPS}', False, 'white'),
+                             (plant.rect[0] + 30 + fon_x, plant.rect[1] + 37 + fon_y))
                 dis.blit(plant.image, (plant.rect[0] + fon_x, plant.rect[1] + fon_y))
                 plant.set_time()
                 plant.count += 1
@@ -123,14 +153,14 @@ def main():
         dis.blit(player, (player_x, player_y))
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
 
-
         if is_inventory:
             dis.blit(load_image('inventory.png'), (0, 0))
             inventory.render(dis)
             for x in range(inventory.width):
                 for y in range(inventory.height):
                     try:
-                        dis.blit(load_image(plants_images[x + y * inventory.width]) ,(x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
+                        dis.blit(load_image(plants_images[x + y * inventory.width]), (
+                        x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
                     except IndexError:
                         pass
         if is_settings:
@@ -138,11 +168,17 @@ def main():
             dis.blit(load_image('exit.png'), (1500, 750))
 
         if is_market:
+            with open('ofersss.txt', 'r', encoding='utf-8') as f_in:
+                ofers = f_in.readlines()
+            ofers = "".join(ofers)
+            ofers = ofers.split()
+            offers1 = ofers[0]
+            offers2 = ofers[1]
+            offers3 = ofers[2]
             dis.blit(load_image('market.png'), (0, 0))
-            dis.blit(load_image('place.png'), (dis_x - 1550, -200))
-            dis.blit(load_image('place.png'), (dis_x - 1550, -100))
-            dis.blit(load_image('place.png'), (dis_x - 1550, 0))
-
+            dis.blit(load_image(offers1), (dis_x - 1550, -200))
+            dis.blit(load_image(offers2), (dis_x - 1550, -100))
+            dis.blit(load_image(offers3), (dis_x - 1550, 0))
 
         if is_info:
             dis.blit(load_image('info.png'), (60, 30))
@@ -158,10 +194,199 @@ def main():
             if settings.get_click(pygame.mouse.get_pos()):
                 run = False
 
+        # отображение реал инвенторя
+        if is_real_inventory:
+            dis.blit(load_image('fon_inventory.png'), (0, 0))
+            real_inventory.render(dis)
+            for x in range(real_inventory.width):
+                for y in range(real_inventory.height):
+                    try:
+                        print(resource.resourses[all_products[x + y * real_inventory.width]])
+                        dis.blit(
+                            font3.render(
+                                f'{all_products[x + y * real_inventory.width]}',
+                                False, 'black'), (
+                                x * real_inventory.cell_size_x + real_inventory.left,
+                                y * real_inventory.cell_size_y + real_inventory.top))
+                        dis.blit(
+                            font3.render(
+                                f'{resource.resourses[all_products[x + y * real_inventory.width]]}',
+                                False, 'black'), (
+                                x * real_inventory.cell_size_x + real_inventory.left,
+                                y * real_inventory.cell_size_y + real_inventory.top + 40))
+                    except TypeError:
+                        pass
+                    except IndexError:
+                        pass
 
+        if is_buy1 or is_buy2 or is_buy3:
+            if is_buy1:
+                kords = (dis_x - 1550, -200)
+                offers = offers1
+            elif is_buy2:
+                kords = (dis_x - 1550, -100)
+                offers = offers2
+            elif is_buy3:
+                kords = (dis_x - 1550, 0)
+                offers = offers3
+            if offers == 'place1.png':
+                if numproducts[0] >= 20:
+                    numproducts[0] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 10))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place2.png':
+                if numproducts[1] >= 20:
+                    numproducts[1] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 10))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place3.png':
+                if numproducts[2] >= 20:
+                    numproducts[2] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 10))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place4.png':
+                if numproducts[3] >= 20:
+                    numproducts[3] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 20))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place5.png':
+                if numproducts[4] >= 20:
+                    numproducts[4] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 20))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place6.png':
+                if numproducts[5] >= 20:
+                    numproducts[5] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 20))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place7.png':
+                if numproducts[6] >= 20:
+                    numproducts[6] -= 20
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 20))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place8.png':
+                if numproducts[6] >= 20 and numproducts[3] >= 5:
+                    numproducts[6] -= 20
+                    numproducts[3] -= 5
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 50))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            elif offers == 'place9.png':
+                if numproducts[4] >= 20 and numproducts[5] >= 30:
+                    numproducts[4] -= 20
+                    numproducts[5] -= 30
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance + 120))
+                    f.close()
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if is_buy1:
+                f = open("ofersss.txt", 'w')
+                f.write(f'{offers}\n')
+                f.write(f'{offers2}\n')
+                f.write(offers3)
+                f.close()
+            elif is_buy2:
+                f = open("ofersss.txt", 'w')
+                f.write(f'{offers1}\n')
+                f.write(f'{offers}\n')
+                f.write(offers3)
+                f.close()
+            elif is_buy3:
+                f = open("ofersss.txt", 'w')
+                f.write(f'{offers1}\n')
+                f.write(f'{offers2}\n')
+                f.write(offers)
+                f.close()
+            f = open("inventory_.txt", 'w')
+            f.write(
+                f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}')
+            f.close()
+            is_buy1 = False
+            is_buy2 = False
+            is_buy3 = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                for i in resource.resourses:
+                    print(f'{i}: {resource.resourses[i]}')
                 run = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and is_settings and not is_inventory:
                 is_settings = False
@@ -198,26 +423,27 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
                 if offer1.f(pygame.mouse.get_pos()):
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 1))
-                    f.close()
+                    is_buy1 = True
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
                 if offer2.f(pygame.mouse.get_pos()):
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 10))
-                    f.close()
+                    is_buy2 = True
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market:
                 if offer3.f(pygame.mouse.get_pos()):
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 100))
-                    f.close()
+                    is_buy3 = True
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_b and is_real_inventory:
+                gameplay = True
+                is_real_inventory = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_b and not is_real_inventory and gameplay:
+                gameplay = False
+                is_real_inventory = True
 
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()
+
 
 if __name__ == '__main__':
     main()
