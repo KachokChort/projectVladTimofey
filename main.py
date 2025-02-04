@@ -1,5 +1,5 @@
 import pygame
-from load_image import load_image, Field, Board, Inventory, Animal_House, resource
+from load_image import load_image, Field, Inventory, Animal_House, resource, Hero
 
 pygame.init()
 
@@ -19,9 +19,12 @@ def main():
     plants_images = ['wheap/wheap_grains.png', 'carrot/carrot_sprout.png', 'corn/corn.png', 'pumpkin/pumpkin.png',
                      'sunflower/sunflower.png', 'tomato/tomato.png', 'cucumber/cucumber.png']
 
+    river = [load_image('river/river1.png', 1), load_image('river/river1.png', 1), load_image('river/river1.png', 1)]
+    river_count = 0
+
     main_plant = wheat.copy()
 
-    all_products = ['carrot', 'corn', 'cucumber', 'pumpkin', 'sunflower', 'tomato', 'wheap', 'egg']
+    all_products = ['carrot', 'corn', 'cucumber', 'pumpkin', 'sunflower', 'tomato', 'wheap', 'egg', 'milk']
 
     clock = pygame.time.Clock()
     run = True
@@ -42,7 +45,6 @@ def main():
 
     fon = load_image('fon.png')
     chiken_house_fon = load_image('fon_chiken.png')
-    player = load_image('player.png')
 
     font = pygame.font.SysFont('Arial', 20)
     font2 = pygame.font.SysFont('Arial', 80)
@@ -54,19 +56,27 @@ def main():
     count = 0
     inventory = Inventory(5, 3, plants_for_inventory)
     inventory.set_view(275, 100, 270, 300)
-    chiken_house = Animal_House(4, 2)
+    chiken_house = Animal_House(4, 2, 'chiken', 'chiken2.png', 'chiken.png')
     chiken_house.set_view(150, 120, 400, 400)
+    cow_house = Animal_House(4, 2, 'cow', 'cow2.png', 'cow.png')
+    cow_house.set_view(150, 120, 400, 400)
     real_inventory = Inventory(8, 4, plants_for_inventory)
     real_inventory.set_view(10, 10, 238, 265)
+
+    player_group = pygame.sprite.Group()
+    tiles_group = pygame.sprite.Group()
+    hero = Hero(player_group, (player_x, player_y))
 
     gameplay = True
     is_inventory = False
     is_chiken_house = False
     is_real_inventory = False
+    is_cow_house = False
 
     while run:
         # переменные, которые нужно изменять во время игры
         chiken_house_rect = pygame.rect.Rect(125 + fon_x, 760 + fon_y, 500, 500)
+        cow_house_rect = pygame.rect.Rect(125 + fon_x, 1500 + fon_y, 650, 600)
         field.set_view(60 + fon_x, 50 + fon_y, 65, 67)
         count += 1
         player_speed = 20
@@ -77,25 +87,25 @@ def main():
         if key[pygame.K_LSHIFT] and gameplay:
             player_speed = 7
         if key[pygame.K_w] and gameplay:
-            if dis_y // 2 - 100 > player_y and fon_y <= 0:
+            if dis_y // 2 - 100 > hero.rect.y and fon_y <= 0:
                 fon_y += player_speed
-            elif player_y > 0:
-                player_y -= player_speed
+            elif hero.rect.y > 0:
+                hero.update((0, -player_speed), None)
         if key[pygame.K_s] and gameplay:
-            if dis_y // 2 + 100 < player_y and fon_y >= -(2160 - dis_y):
+            if dis_y // 2 + 100 < hero.rect.y and fon_y >= -(2160 - dis_y):
                 fon_y -= player_speed
-            elif player_y < 2060 + fon_y:
-                player_y += player_speed
+            elif hero.rect.y < 2060 + fon_y:
+                hero.update((0, player_speed), None)
         if key[pygame.K_d] and gameplay:
-            if dis_x // 2 + 100 < player_x and fon_x >= -(3840 - dis_x):
+            if dis_x // 2 + 100 < hero.rect.x and fon_x >= -(3840 - dis_x):
                 fon_x -= player_speed
-            elif player_x < 3780 + fon_x:
-                player_x += player_speed
+            elif hero.rect.x < 3780 + fon_x:
+                hero.update((player_speed, 0), None)
         if key[pygame.K_a] and gameplay:
-            if dis_x // 2 - 100 > player_x and fon_x <= 0:
+            if dis_x // 2 - 100 > hero.rect.x and fon_x <= 0:
                 fon_x += player_speed
-            elif player_x > 0:
-                player_x -= player_speed
+            elif hero.rect.x > 0:
+                hero.update((-player_speed, 0), None)
 
         # отловка нажатий на дoма зверей
         if pygame.mouse.get_pressed()[0] and gameplay:
@@ -103,7 +113,14 @@ def main():
                 # print('yes')
                 gameplay = False
                 is_inventory = False
+                is_cow_house = False
                 is_chiken_house = True
+            if cow_house_rect.collidepoint(pygame.mouse.get_pos()):
+                # print('yes')
+                gameplay = False
+                is_inventory = False
+                is_chiken_house = False
+                is_cow_house = True
 
         # отображение всего на карте
         dis.fill('black')
@@ -121,8 +138,16 @@ def main():
                 plant.set_time()
                 plant.count += 1
 
-        dis.blit(player, (player_x, player_y))
+        player_group.draw(dis)
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
+
+        # отображение реки
+        # if river_count / 20 == 2:
+        #     river_count = 0
+        # river_count += 1
+        # dis.blit(river[river_count // 20], (fon_x, fon_y))
+
+        pygame.draw.rect(dis, pygame.Color("white"), cow_house_rect, 1)
 
         # отображение и инициализация курятника
         if is_chiken_house:
@@ -147,6 +172,32 @@ def main():
                         j * chiken_house.cell_size_y + chiken_house.top))
             if pygame.mouse.get_pressed()[0]:
                 chiken_house.get_click(pygame.mouse.get_pos())
+
+        # отображение и инициализация курятника
+        if is_cow_house:
+            dis.blit(chiken_house_fon, (0, 0))
+            cow_house.render(dis)
+            for i in range(cow_house.width):
+                for j in range(cow_house.height):
+                    cow = cow_house.board[i][j]
+                    cow_image = load_image(cow.image)
+                    cow.count += 1
+                    if cow.count < cow.FPS * cow.time:
+                        dis.blit(
+                            font2.render(f'{cow.time - cow.count // FPS - 1}.{FPS - cow.count % FPS}', False,
+                                         'black'), (
+                                i * cow_house.cell_size_x + cow_house.left,
+                                j * cow_house.cell_size_y + cow_house.top))
+                    else:
+                        cow.image = cow.first_image
+                    if cow.count == cow.FPS * cow.time:
+                        resource.resourses['milk'] += 1
+                    dis.blit(cow_image, (
+                        i * cow_house.cell_size_x + cow_house.left,
+                        j * cow_house.cell_size_y + cow_house.top))
+            if pygame.mouse.get_pressed()[0]:
+                cow_house.get_click(pygame.mouse.get_pos())
+
 
         # отображение иинициализация инвенторя
         if is_inventory:
@@ -222,8 +273,11 @@ def main():
                 is_inventory = False
                 is_chiken_house = False
                 is_real_inventory = False
-                chiken_house = Animal_House(4, 2)
+                is_cow_house = False
+                chiken_house = Animal_House(4, 2, 'chiken', 'chiken2.png', 'chiken.png')
                 chiken_house.set_view(150, 120, 400, 400)
+                cow_house = Animal_House(4, 2, 'cow', 'cow2.png', 'cow.png')
+                cow_house.set_view(150, 120, 400, 400)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_b and is_real_inventory:
                 gameplay = True
                 is_real_inventory = False

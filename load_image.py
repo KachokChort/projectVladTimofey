@@ -3,10 +3,29 @@ import os
 import sys
 
 
+class Hero(pygame.sprite.Sprite):
+    def __init__(self, group, pos):
+        super().__init__(group)
+        self.image = load_image("player.png")
+        self.rect = self.image.get_rect()
+        # вычисляем маску для эффективного сравнения
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(pos[0], pos[1])
+
+    def update(self, pos, obj):
+        self.rect.x += pos[0]
+        self.rect.y += pos[1]
+        try:
+            if pygame.sprite.spritecollideany(self, obj):
+                self.rect.x -= pos[0]
+                self.rect.y -= pos[1]
+        except TypeError:
+            pass
+
+
 class Resours:
     def __init__(self, resourses):
         self.resourses = resourses
-
 
 
 def load_image(name, colorkey=None):
@@ -17,7 +36,7 @@ def load_image(name, colorkey=None):
         sys.exit()
     image = pygame.image.load(fullname)
     if colorkey is not None:
-        image = image.convert()
+        # image = image.convert()
         if colorkey == -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey)
@@ -143,9 +162,10 @@ class Inventory(Board):
 
 class Animal_House(Board):
     # создание поля
-    def __init__(self, width, height):
+    def __init__(self, width, height, name, image, first_image):
         super().__init__(width, height)
-        self.board = [[Animal('chiken', 2, 'chiken2.png', first_image='chiken.png') for i in range(self.height)] for _ in
+        self.board = [[Animal(name, 2, image, first_image=first_image) for i in range(self.height)] for _
+                      in
                       range(self.width)]
         # значения по умолчанию
         self.left = 10
@@ -190,5 +210,6 @@ class Animal:
             return True
         return False
 
-resources = {'carrot': 0,'corn': 0,'cucumber': 0,'pumpkin': 0,'sunflower': 0,'tomato': 0,'wheap': 0,'egg': 0}
+
+resources = {'carrot': 0, 'corn': 0, 'cucumber': 0, 'pumpkin': 0, 'sunflower': 0, 'tomato': 0, 'wheap': 0, 'egg': 0, 'milk': 0}
 resource = Resours(resources)
