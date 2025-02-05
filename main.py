@@ -93,10 +93,6 @@ def main():
     is_buy1 = False
     is_buy2 = False
     is_buy3 = False
-    up = True
-    down = True
-    right = True
-    left = True
     level1 = True
     level2 = False
     level3 = False
@@ -132,6 +128,10 @@ def main():
 
 
     print(ofer)
+    with open('stats2.txt', 'r', encoding='utf-8') as f_in:
+        steps = f_in.readlines()
+    steps = "".join(steps)
+    steps = int(steps)
     with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
         inventory1 = f_in.readlines()
     inventory1 = "".join(inventory1)
@@ -167,20 +167,24 @@ def main():
         if (key[pygame.K_w] or key[pygame.K_UP]) and gameplay:
             if dis_y // 2 - 100 > player_y and fon_y <= 0:
                 fon_y += player_speed
+                steps += 1
             elif player_y > 0:
                 player_y -= player_speed
         if (key[pygame.K_s] or key[pygame.K_DOWN]) and gameplay:
             if dis_y // 2 + 100 < player_y and fon_y >= -(2160 - dis_y):
+                steps += 1
                 fon_y -= player_speed
             elif player_y < 2060 + fon_y:
                 player_y += player_speed
         if (key[pygame.K_d] or key[pygame.K_RIGHT]) and gameplay:
             if dis_x // 2 + 100 < player_x and fon_x >= -(3840 - dis_x):
+                steps += 1
                 fon_x -= player_speed
             elif player_x < 3780 + fon_x:
                 player_x += player_speed
         if (key[pygame.K_a] or key[pygame.K_LEFT]) and gameplay:
             if dis_x // 2 - 100 > player_x and fon_x <= 0:
+                steps += 1
                 fon_x += player_speed
             elif player_x > 0:
                 player_x -= player_speed
@@ -241,6 +245,8 @@ def main():
             dis.blit(load_image('info.png'), (60, 30))
             dis.blit(load_image('coin.png'), (dis_x - 630, 50))
             dis.blit(load_image('button_stats_market.png'), (dis_x - 1800, 50))
+            dis.blit(load_image('button_steps.png'), (dis_x - 1800, 350))
+            dis.blit(font1.render(str(steps), 1, (0, 0, 0)), (dis_x - 1250, 425))
             print(balance)
             dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 100))
             dis.blit(font1.render(str(stats), 1, (0, 0, 0)), (dis_x - 1250, 125))
@@ -712,7 +718,9 @@ def main():
             is_buy1 = False
             is_buy2 = False
             is_buy3 = False
-
+        f = open("stats2.txt", 'w')
+        f.write(str(steps))
+        f.close()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 for i in resource.resourses:
