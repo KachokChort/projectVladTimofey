@@ -11,3 +11,8 @@ place3w.png
 place1k.png
 place2k.png
 place3k.png
+place4.png
+place2cp.png
+place1p.png
+place2p.png
+place2pw.png

@@ -4,7 +4,13 @@ from load_image import load_image, Field, Board, Inventory, Settings, Informatio
 
 pygame.init()
 
-
+def wr(ba, stats, bal):
+    f1 = open("stats.txt", 'w')
+    f1.write(str(stats + 1))
+    f1.close()
+    f = open("balance.txt", 'w')
+    f.write(str(ba + bal))
+    f.close()
 def main():
     pygame.mixer.music.load('music_fon.mp3')
     pygame.mixer.music.play(-1)
@@ -98,11 +104,32 @@ def main():
     level5 = False
     bar = '5_8bar.png'
     bar1 = 5
+    if level1:
+        with open('offers_level_1.txt', 'r', encoding='utf-8') as f_in:
+            ofer = f_in.readlines()
+        ofer = "".join(ofer)
+        ofer = ofer.split()
+    elif level2:
+        with open('offers_level_2.txt', 'r', encoding='utf-8') as f_in:
+            ofer = f_in.readlines()
+        ofer = "".join(ofer)
+        ofer = ofer.split()
+    elif level3:
+        with open('offers_level_3.txt', 'r', encoding='utf-8') as f_in:
+            ofer = f_in.readlines()
+        ofer = "".join(ofer)
+        ofer = ofer.split()
+    elif level4:
+        with open('offers_level_4.txt', 'r', encoding='utf-8') as f_in:
+            ofer = f_in.readlines()
+        ofer = "".join(ofer)
+        ofer = ofer.split()
+    elif level5:
+        with open('offers_level_5.txt', 'r', encoding='utf-8') as f_in:
+            ofer = f_in.readlines()
+        ofer = "".join(ofer)
+        ofer = ofer.split()
 
-    with open('offers.txt', 'r', encoding='utf-8') as f_in:
-        ofer = f_in.readlines()
-    ofer = "".join(ofer)
-    ofer = ofer.split()
 
     print(ofer)
     with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
@@ -190,6 +217,7 @@ def main():
                         pass
         if is_settings:
             dis.blit(load_image('settings.png'), (60, 30))
+            dis.blit(load_image('eternal_ranch.png'), (800, -180))
             dis.blit(load_image('sound.png'), (150, 30))
             dis.blit(load_image(bar), (150, 170))
             dis.blit(load_image('+.png'), (300, 170))
@@ -253,7 +281,6 @@ def main():
                         pass
 
         if is_buy1 or is_buy2 or is_buy3:
-            f1 = open("stats.txt", 'w')
             if is_buy1:
                 kords = (dis_x - 1550, -200)
                 offers = offers1
@@ -265,10 +292,8 @@ def main():
                 offers = offers3
             if offers == 'place1.png':
                 if numproducts[0] >= 20:
+                    wr(balance, stats, 10)
                     numproducts[0] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 10))
-                    f1.write(str(stats + 1))
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -280,10 +305,7 @@ def main():
             elif offers == 'place2.png':
                 if numproducts[1] >= 20:
                     numproducts[1] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 10))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 10)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -295,10 +317,7 @@ def main():
             elif offers == 'place3.png':
                 if numproducts[2] >= 20:
                     numproducts[2] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 10))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 10)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -310,10 +329,7 @@ def main():
             elif offers == 'place4.png':
                 if numproducts[3] >= 20:
                     numproducts[3] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 20))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -325,10 +341,7 @@ def main():
             elif offers == 'place5.png':
                 if numproducts[4] >= 20:
                     numproducts[4] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 20))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -340,10 +353,7 @@ def main():
             elif offers == 'place6.png':
                 if numproducts[5] >= 20:
                     numproducts[5] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 20))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -355,10 +365,7 @@ def main():
             elif offers == 'place7.png':
                 if numproducts[6] >= 20:
                     numproducts[6] -= 20
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 20))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -371,10 +378,7 @@ def main():
                 if numproducts[6] >= 20 and numproducts[3] >= 5:
                     numproducts[6] -= 20
                     numproducts[3] -= 5
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 50))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 50)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -387,10 +391,294 @@ def main():
                 if numproducts[4] >= 20 and numproducts[5] >= 30:
                     numproducts[4] -= 20
                     numproducts[5] -= 30
-                    f = open("balance.txt", 'w')
-                    f.write(str(balance + 120))
-                    f1.write(str(stats + 1))
-                    f.close()
+                    wr(balance, stats, 120)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1cw.png':
+                if numproducts[0] >= 17 and numproducts[6] >= 17:
+                    numproducts[0] -= 17
+                    numproducts[6] -= 17
+                    wr(balance, stats, 40)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1k.png':
+                if numproducts[1] >= 25:
+                    numproducts[1] -= 25
+                    wr(balance, stats, 30)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1w.png':
+                if numproducts[6] >= 30:
+                    numproducts[6] -= 30
+                    wr(balance, stats, 40)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2c.png':
+                if numproducts[0] >= 15:
+                    numproducts[0] -= 15
+                    wr(balance, stats, 15)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2k.png':
+                if numproducts[1] >= 17:
+                    numproducts[1] -= 17
+                    wr(balance, stats, 23)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2w.png':
+                if numproducts[6] >= 13:
+                    numproducts[6] -= 13
+                    wr(balance, stats, 15)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place3c.png':
+                if numproducts[0] >= 30:
+                    numproducts[0] -= 30
+                    wr(balance, stats, 35)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place3k.png':
+                if numproducts[1] >= 5:
+                    numproducts[1] -= 5
+                    wr(balance, stats, 7)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place3w.png':
+                if numproducts[6] >= 50:
+                    numproducts[6] -= 50
+                    wr(balance, stats, 65)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place4c.png':
+                if numproducts[0] >= 5:
+                    numproducts[0] -= 5
+                    wr(balance, stats, 7)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1o.png':
+                if numproducts[2] >= 23:
+                    numproducts[2] -= 23
+                    wr(balance, stats, 68)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1op.png':
+                if numproducts[3] >= 24 and numproducts[2] >= 13:
+                    numproducts[3] -= 24
+                    numproducts[2] -= 13
+                    wr(balance, stats, 90)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place1p.png':
+                if numproducts[3] >= 7:
+                    numproducts[3] -= 7
+                    wr(balance, stats, 15)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place1s.png':
+                if numproducts[4] >= 25:
+                    numproducts[4] -= 25
+                    wr(balance, stats, 54)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place1t.png':
+                if numproducts[5] >= 15:
+                    numproducts[5] -= 15
+                    wr(balance, stats, 45)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place2cp.png':
+                if numproducts[0] >= 20 and numproducts[3] >= 15:
+                    numproducts[0] -= 20
+                    numproducts[3] -= 15
+                    wr(balance, stats, 100)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2o.png':
+                if numproducts[2] >= 61:
+                    numproducts[2] -= 61
+                    wr(balance, stats, 160)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2p.png':
+                if numproducts[3] >= 10:
+                    numproducts[3] -= 10
+                    wr(balance, stats, 26)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+            if offers == 'place2pw.png':
+                if numproducts[6] >= 40 and numproducts[3] >= 10:
+                    numproducts[6] -= 40
+                    numproducts[3] -= 10
+                    wr(balance, stats, 100)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place2s.png':
+                if numproducts[4] >= 14:
+                    numproducts[4] -= 14
+                    wr(balance, stats, 27)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place2t.png':
+                if numproducts[5] >= 3:
+                    numproducts[5] -= 3
+                    wr(balance, stats, 10)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place3s.png':
+                if numproducts[4] >= 34:
+                    numproducts[4] -= 34
+                    wr(balance, stats, 70)
+                    offers = random.choice(ofer)
+                    dis.blit(load_image('place_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+                else:
+                    dis.blit(load_image('place_not_done.png'), kords)
+                    pygame.display.update()
+                    pygame.time.wait(2000)
+
+            if offers == 'place3t.png':
+                if numproducts[5] >= 16:
+                    numproducts[5] -= 16
+                    wr(balance, stats, 34)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -417,7 +705,6 @@ def main():
                 f.write(f'{offers2}\n')
                 f.write(offers)
                 f.close()
-            f1.close()
             f = open("inventory_.txt", 'w')
             f.write(
                 f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}')

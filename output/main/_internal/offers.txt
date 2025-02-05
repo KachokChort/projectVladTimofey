@@ -1,0 +1,9 @@
+place1.png
+place2.png
+place3.png
+place4.png
+place5.png
+place6.png
+place7.png
+place8.png
+place9.png
