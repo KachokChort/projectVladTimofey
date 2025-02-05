@@ -6,6 +6,10 @@ pygame.init()
 
 
 def main():
+    pygame.mixer.music.load('music_fon.mp3')
+    pygame.mixer.music.play(-1)
+    volume0 = 0.3
+
     wheat = ['wheap', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
     carrot = ['carrot', 'carrot/carrot_1.png', 'carrot/carrot_2.png', 5, 'carrot/carrot_sprout.png']
     corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 5, 'corn/corn.png']
@@ -58,6 +62,10 @@ def main():
     inventory.set_view(275, 100, 270, 300)
     settings = Settings(1, 1)
     settings.set_view(700, 700, 559, 215)
+    volume1 = Settings(1, 1)
+    volume1.set_view(20, 170, 225, 225)
+    volume2 = Settings(1, 1)
+    volume2.set_view(300, 170, 225, 225)
     info = Information(1, 1)
     info.set_view(1500, 750, 148, 148)
     offer1 = Offer(1, 1)
@@ -79,6 +87,17 @@ def main():
     is_buy1 = False
     is_buy2 = False
     is_buy3 = False
+    up = True
+    down = True
+    right = True
+    left = True
+    level1 = True
+    level2 = False
+    level3 = False
+    level4 = False
+    level5 = False
+    bar = '5_8bar.png'
+    bar1 = 5
 
     with open('offers.txt', 'r', encoding='utf-8') as f_in:
         ofer = f_in.readlines()
@@ -97,11 +116,16 @@ def main():
         numproducts.append(int(i.split('=')[1]))
 
     while run:
-
+        pygame.mixer.music.set_volume(volume0)
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()
         balance = "".join(balance)
         balance = int(balance)
+        with open('stats.txt', 'r', encoding='utf-8') as f_in:
+            stats = f_in.readlines()
+        stats = "".join(stats)
+        stats = int(stats)
+
 
         count += 1
         player_speed = 20
@@ -113,26 +137,27 @@ def main():
 
         if key[pygame.K_LSHIFT] and gameplay:
             player_speed = 7
-        if key[pygame.K_w] and gameplay:
+        if (key[pygame.K_w] or key[pygame.K_UP]) and gameplay:
             if dis_y // 2 - 100 > player_y and fon_y <= 0:
                 fon_y += player_speed
             elif player_y > 0:
                 player_y -= player_speed
-        if key[pygame.K_s] and gameplay:
+        if (key[pygame.K_s] or key[pygame.K_DOWN]) and gameplay:
             if dis_y // 2 + 100 < player_y and fon_y >= -(2160 - dis_y):
                 fon_y -= player_speed
             elif player_y < 2060 + fon_y:
                 player_y += player_speed
-        if key[pygame.K_d] and gameplay:
+        if (key[pygame.K_d] or key[pygame.K_RIGHT]) and gameplay:
             if dis_x // 2 + 100 < player_x and fon_x >= -(3840 - dis_x):
                 fon_x -= player_speed
             elif player_x < 3780 + fon_x:
                 player_x += player_speed
-        if key[pygame.K_a] and gameplay:
+        if (key[pygame.K_a] or key[pygame.K_LEFT]) and gameplay:
             if dis_x // 2 - 100 > player_x and fon_x <= 0:
                 fon_x += player_speed
             elif player_x > 0:
                 player_x -= player_speed
+
 
         for plant in plants:
             plant = plants[plant]
@@ -165,6 +190,10 @@ def main():
                         pass
         if is_settings:
             dis.blit(load_image('settings.png'), (60, 30))
+            dis.blit(load_image('sound.png'), (150, 30))
+            dis.blit(load_image(bar), (150, 170))
+            dis.blit(load_image('+.png'), (300, 170))
+            dis.blit(load_image('-.png'), (20, 170))
             dis.blit(load_image('exit.png'), (700, 700))
 
         if is_market:
@@ -183,8 +212,10 @@ def main():
         if is_info:
             dis.blit(load_image('info.png'), (60, 30))
             dis.blit(load_image('coin.png'), (dis_x - 630, 50))
+            dis.blit(load_image('button_stats_market.png'), (dis_x - 1800, 50))
             print(balance)
             dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 100))
+            dis.blit(font1.render(str(stats), 1, (0, 0, 0)), (dis_x - 1250, 125))
 
         if pygame.mouse.get_pressed()[0] and is_inventory:
             if inventory.get_click(pygame.mouse.get_pos()):
@@ -193,6 +224,8 @@ def main():
         if pygame.mouse.get_pressed()[0] and is_settings:
             if settings.get_click(pygame.mouse.get_pos()):
                 run = False
+
+
 
         # отображение реал инвенторя
         if is_real_inventory:
@@ -220,6 +253,7 @@ def main():
                         pass
 
         if is_buy1 or is_buy2 or is_buy3:
+            f1 = open("stats.txt", 'w')
             if is_buy1:
                 kords = (dis_x - 1550, -200)
                 offers = offers1
@@ -234,7 +268,7 @@ def main():
                     numproducts[0] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 10))
-                    f.close()
+                    f1.write(str(stats + 1))
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -248,6 +282,7 @@ def main():
                     numproducts[1] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 10))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -262,6 +297,7 @@ def main():
                     numproducts[2] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 10))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -276,6 +312,7 @@ def main():
                     numproducts[3] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 20))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -290,6 +327,7 @@ def main():
                     numproducts[4] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 20))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -304,6 +342,7 @@ def main():
                     numproducts[5] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 20))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -318,6 +357,7 @@ def main():
                     numproducts[6] -= 20
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 20))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -333,6 +373,7 @@ def main():
                     numproducts[3] -= 5
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 50))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -348,6 +389,7 @@ def main():
                     numproducts[5] -= 30
                     f = open("balance.txt", 'w')
                     f.write(str(balance + 120))
+                    f1.write(str(stats + 1))
                     f.close()
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -375,6 +417,7 @@ def main():
                 f.write(f'{offers2}\n')
                 f.write(offers)
                 f.close()
+            f1.close()
             f = open("inventory_.txt", 'w')
             f.write(
                 f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}')
@@ -406,6 +449,22 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_e and not is_inventory:
                 gameplay = False
                 is_inventory = True
+
+            if event.type == pygame.MOUSEBUTTONDOWN and is_settings:
+                if volume1.get_click(pygame.mouse.get_pos()):
+                    print(bar1, '-')
+                    if bar1 > 0:
+                        bar = f'{bar1 - 1}_8bar.png'
+                        bar1 -= 1
+                        volume0 -= 0.06
+
+            if event.type == pygame.MOUSEBUTTONDOWN and is_settings:
+                if volume2.get_click(pygame.mouse.get_pos()):
+                    print(bar1, '+')
+                    if bar1 < 8:
+                        bar = f'{bar1 + 1}_8bar.png'
+                        bar1 += 1
+                        volume0 += 0.06
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_t and is_market and not is_inventory:
                 gameplay = True
