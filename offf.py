@@ -1,6 +1,6 @@
 import pygame
 import random
-from load_image1 import load_image, Field, Inventory, Animal_House, resource, Hero, Lake, safe_resourses, Settings, \
+from load_image import load_image, Field, Inventory, Animal_House, resource, Hero, Lake, safe_resourses, Settings, \
     Information, Market, Offer
 
 pygame.init()
@@ -162,19 +162,14 @@ def main():
 
     is_locked = {0: level1, 1: level1, 2: level1, 3: level2, 4: level3, 5: level4, 6: level5, 'chik': level6,
                  'cow': level7}
+    with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
+        inventory1 = f_in.readlines()
+    inventory1 = "".join(inventory1)
+    inventory1 = inventory1.split('&')
+    for i in inventory1:
+        resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
 
     while run:
-        with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
-            inventory1 = f_in.readlines()
-        inventory1 = "".join(inventory1)
-        inventory1 = inventory1.split('&')
-        products1 = []
-        numproducts = []
-        for i in inventory1:
-            resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
-        for i in inventory1:
-            products1.append(i.split('=')[0])
-            numproducts.append(int(i.split('=')[1]))
         pygame.mixer.music.set_volume(volume0)
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()

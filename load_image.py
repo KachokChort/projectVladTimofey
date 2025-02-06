@@ -258,6 +258,9 @@ class Animal:
             return True
         return False
 
+class Information(Board):
+    def __init__(self, width, height):
+        super().__init__(width, height)
 
 resources = {'carrot': 0, 'corn': 0, 'cucumber': 0, 'pumpkin': 0, 'sunflower': 0, 'tomato': 0, 'wheap': 0, 'egg': 0, 'milk': 0}
 resource = Resours(resources)
