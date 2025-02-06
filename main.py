@@ -1,6 +1,6 @@
 import pygame
 import random
-from load_image import load_image, Field, Board, Inventory, Settings, Information, Market, Offer, resource
+from load_image1 import load_image, Field, Board, Inventory, Settings, Information, Market, Offer, resource
 
 pygame.init()
 

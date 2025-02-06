@@ -3,6 +3,10 @@ import os
 import sys
 
 
+class Resours:
+    def __init__(self, resourses):
+        self.resourses = resourses
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
     # если файл не существует, то выходим
@@ -10,15 +14,14 @@ def load_image(name, colorkey=None):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
     image = pygame.image.load(fullname)
-    # if colorkey is not None:
-    #     # image = image.convert()
-    #     if colorkey == -1:
-    #         colorkey = image.get_at((0, 0))
-    #     image.set_colorkey(colorkey)
-    # else:
-    #     image = image.convert_alpha()
+  # if colorkey is not None:
+  #     image = image.convert()
+  #     if colorkey == -1:
+  #         colorkey = image.get_at((0, 0))
+  #     image.set_colorkey(colorkey)
+  # else:
+  #     image = image.convert_alpha()
     return image
-
 
 class Lake(pygame.sprite.Sprite):
     image = load_image("river/river1.png")
@@ -33,8 +36,6 @@ class Lake(pygame.sprite.Sprite):
 
     def set_rect(self, rect):
         self.rect = rect
-
-
 class Hero(pygame.sprite.Sprite):
     def __init__(self, group, pos):
         super().__init__(group)
@@ -48,8 +49,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x += pos[0]
         self.rect.y += pos[1]
         try:
-            print(pygame.sprite.collide_mask(self, obj))
-            if pygame.sprite.collide_mask(self, obj):
+            if pygame.sprite.spritecollideany(self, obj):
                 self.rect.x -= pos[0]
                 self.rect.y -= pos[1]
         except TypeError:
@@ -57,13 +57,6 @@ class Hero(pygame.sprite.Sprite):
 
     def is_col(self, obj):
         return bool(pygame.sprite.collide_mask(self, obj))
-
-
-class Resours:
-    def __init__(self, resourses):
-        self.resourses = resourses
-
-
 class Board:
     # создание поля
     def __init__(self, width, height):
@@ -118,30 +111,29 @@ class Field(Board):
         self.cell_size_x = 30
         self.cell_size_y = 30
 
+
     def get_click(self, mouse_pos, screen, list, props):
         cell = self.get_cell(mouse_pos)
         if cell:
             return self.on_click(cell, screen, list, props)
 
     def on_click(self, cell, screen, list, props):
-        # print(cell)
-        # print(bool(self.board[cell[1]][cell[0]]))
+        #print(cell)
+        #print(bool(self.board[cell[1]][cell[0]]))
         if not bool(self.board[cell[1]][cell[0]]):
             self.board[cell[1]][cell[0]] = 1
-            rect = (cell[0] * self.cell_size_x + self.left, cell[1] * self.cell_size_y + self.top, self.cell_size_x,
-                    self.cell_size_y)
+            rect = (cell[0] * self.cell_size_x + self.left, cell[1] * self.cell_size_y + self.top, self.cell_size_x, self.cell_size_y)
             rect = pygame.Rect(rect)
             return (Plant(screen, props[0], rect=rect, image=load_image(props[1]), first_image=load_image(props[2]),
                           time=props[3], id=len(list) - 1),
                     cell)
         elif list[cell].set_time():
-            resource.resourses[list[cell].name] += 1
             self.board[cell[1]][cell[0]] = 0
             del list[cell]
 
 
 class Plant:
-    def __init__(self, screen, name, rect, time, id, image=None, count=0, first_image=None, FPS=30):
+    def __init__(self, screen, name, rect, time, id, image=None, count=0, first_image=None, FPS=60):
         self.screen = screen
         self.name = name
         self.rect = rect
@@ -162,6 +154,7 @@ class Plant:
         return False
 
 
+
 class Inventory(Board):
     def __init__(self, width, height, plants):
         super().__init__(width, height)
@@ -175,6 +168,7 @@ class Inventory(Board):
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
+        print(cell)
         if cell:
             return self.on_click(cell)
 
@@ -197,7 +191,6 @@ class Market(Board):
         cell = self.get_cell(mouse_pos)
         if cell:
             return cell
-
 class Offer(Board):
     def __init__(self, width, height):
         super().__init__(width, height)
@@ -206,8 +199,9 @@ class Offer(Board):
         cell = self.get_cell(mouse_pos)
         if cell:
             return True
-
-
+class Information(Board):
+    def __init__(self, width, height):
+        super().__init__(width, height)
 class Animal_House(Board):
     # создание поля
     def __init__(self, width, height, name, image, first_image):
@@ -241,10 +235,10 @@ class Animal_House(Board):
 
 
 class Animal:
-    def __init__(self, name, time, image=None, count=0, first_image=None, FPS=30):
+    def __init__(self, name, time, image=None, count=0, first_image=None, FPS=60):
         self.name = name
         self.second_image = image
-        self.count = (time) * FPS
+        self.count = (time - 1) * FPS
         self.time = time
         self.first_image = first_image
         self.image = first_image
@@ -258,10 +252,8 @@ class Animal:
             return True
         return False
 
-
-resources = {'carrot': 0, 'corn': 0, 'cucumber': 0, 'pumpkin': 0, 'sunflower': 0, 'tomato': 0, 'wheap': 0, 'egg': 0, 'milk': 0}
+resources = {'carrot': 0,'corn': 0,'cucumber': 0,'pumpkin': 0,'sunflower': 0,'tomato': 0,'wheap': 0,'egg': 0}
 resource = Resours(resources)
-
 
 def safe_resourses(resource):
     data = []
