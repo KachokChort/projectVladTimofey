@@ -155,17 +155,6 @@ def main():
         steps = f_in.readlines()
     steps = "".join(steps)
     steps = int(steps)
-    with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
-        inventory1 = f_in.readlines()
-    inventory1 = "".join(inventory1)
-    inventory1 = inventory1.split('&')
-    products1 = []
-    numproducts = []
-    for i in inventory1:
-        resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
-    for i in inventory1:
-        products1.append(i.split('=')[0])
-        numproducts.append(int(i.split('=')[1]))
 
     lake_rect = pygame.rect.Rect(2000 + fon_x, 1000 + fon_y, 1000, 1000)
     lake = load_image('river/river1.png')
@@ -175,6 +164,17 @@ def main():
                  'cow': level7}
 
     while run:
+        with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
+            inventory1 = f_in.readlines()
+        inventory1 = "".join(inventory1)
+        inventory1 = inventory1.split('&')
+        products1 = []
+        numproducts = []
+        for i in inventory1:
+            resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
+        for i in inventory1:
+            products1.append(i.split('=')[0])
+            numproducts.append(int(i.split('=')[1]))
         pygame.mixer.music.set_volume(volume0)
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()
@@ -406,9 +406,9 @@ def main():
                 kords = (dis_x - 1550, 0)
                 offers = offers3
             if offers == 'place1.png':
-                if numproducts[0] >= 20:
+                if resource.resourses[all_products[0]] >= 20:
                     wr(balance, stats, 10)
-                    numproducts[0] -= 20
+                    resource.resourses[all_products[0]] -= 20
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
@@ -418,8 +418,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place2.png':
-                if numproducts[1] >= 20:
-                    numproducts[1] -= 20
+                if resource.resourses[all_products[1]] >= 20:
+                    resource.resourses[all_products[1]] -= 20
                     wr(balance, stats, 10)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -430,8 +430,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place3.png':
-                if numproducts[2] >= 20:
-                    numproducts[2] -= 20
+                if resource.resourses[all_products[2]] >= 20:
+                    resource.resourses[all_products[2]] -= 20
                     wr(balance, stats, 10)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -442,8 +442,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place4.png':
-                if numproducts[3] >= 20:
-                    numproducts[3] -= 20
+                if resource.resourses[all_products[3]] >= 20:
+                    resource.resourses[all_products[3]] -= 20
                     wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -454,8 +454,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place5.png':
-                if numproducts[4] >= 20:
-                    numproducts[4] -= 20
+                if resource.resourses[all_products[4]] >= 20:
+                    resource.resourses[all_products[4]] -= 20
                     wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -466,8 +466,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place6.png':
-                if numproducts[5] >= 20:
-                    numproducts[5] -= 20
+                if resource.resourses[all_products[5]] >= 20:
+                    resource.resourses[all_products[5]] -= 20
                     wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -478,8 +478,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place7.png':
-                if numproducts[6] >= 20:
-                    numproducts[6] -= 20
+                if resource.resourses[all_products[6]] >= 20:
+                    resource.resourses[all_products[6]] -= 20
                     wr(balance, stats, 20)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -490,9 +490,9 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place8.png':
-                if numproducts[6] >= 20 and numproducts[3] >= 5:
-                    numproducts[6] -= 20
-                    numproducts[3] -= 5
+                if resource.resourses[all_products[6]] >= 20 and resource.resourses[all_products[3]] >= 5:
+                    resource.resourses[all_products[6]] -= 20
+                    resource.resourses[all_products[3]] -= 5
                     wr(balance, stats, 50)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -503,9 +503,9 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             elif offers == 'place9.png':
-                if numproducts[4] >= 20 and numproducts[5] >= 30:
-                    numproducts[4] -= 20
-                    numproducts[5] -= 30
+                if resource.resourses[all_products[4]] >= 20 and resource.resourses[all_products[5]] >= 30:
+                    resource.resourses[all_products[4]] -= 20
+                    resource.resourses[all_products[5]] -= 30
                     wr(balance, stats, 120)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -516,9 +516,9 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1cw.png':
-                if numproducts[0] >= 17 and numproducts[6] >= 17:
-                    numproducts[0] -= 17
-                    numproducts[6] -= 17
+                if resource.resourses[all_products[0]] >= 17 and resource.resourses[all_products[6]] >= 17:
+                    resource.resourses[all_products[0]] -= 17
+                    resource.resourses[all_products[6]] -= 17
                     wr(balance, stats, 40)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -529,8 +529,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1k.png':
-                if numproducts[1] >= 25:
-                    numproducts[1] -= 25
+                if resource.resourses[all_products[1]] >= 25:
+                    resource.resourses[all_products[1]] -= 25
                     wr(balance, stats, 30)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -541,8 +541,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1w.png':
-                if numproducts[6] >= 30:
-                    numproducts[6] -= 30
+                if resource.resourses[all_products[6]] >= 30:
+                    resource.resourses[all_products[6]] -= 30
                     wr(balance, stats, 40)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -553,8 +553,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2c.png':
-                if numproducts[0] >= 15:
-                    numproducts[0] -= 15
+                if resource.resourses[all_products[0]] >= 15:
+                    resource.resourses[all_products[0]] -= 15
                     wr(balance, stats, 15)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -565,8 +565,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2k.png':
-                if numproducts[1] >= 17:
-                    numproducts[1] -= 17
+                if resource.resourses[all_products[1]] >= 17:
+                    resource.resourses[all_products[1]] -= 17
                     wr(balance, stats, 23)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -577,8 +577,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2w.png':
-                if numproducts[6] >= 13:
-                    numproducts[6] -= 13
+                if resource.resourses[all_products[6]] >= 13:
+                    resource.resourses[all_products[6]] -= 13
                     wr(balance, stats, 15)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -589,8 +589,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place3c.png':
-                if numproducts[0] >= 30:
-                    numproducts[0] -= 30
+                if resource.resourses[all_products[0]] >= 30:
+                    resource.resourses[all_products[0]] -= 30
                     wr(balance, stats, 35)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -601,8 +601,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place3k.png':
-                if numproducts[1] >= 5:
-                    numproducts[1] -= 5
+                if resource.resourses[all_products[1]] >= 5:
+                    resource.resourses[all_products[1]] -= 5
                     wr(balance, stats, 7)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -613,8 +613,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place3w.png':
-                if numproducts[6] >= 50:
-                    numproducts[6] -= 50
+                if resource.resourses[all_products[6]] >= 50:
+                    resource.resourses[all_products[6]] -= 50
                     wr(balance, stats, 65)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -625,8 +625,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place4c.png':
-                if numproducts[0] >= 5:
-                    numproducts[0] -= 5
+                if resource.resourses[all_products[0]] >= 5:
+                    resource.resourses[all_products[0]] -= 5
                     wr(balance, stats, 7)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -637,8 +637,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1o.png':
-                if numproducts[2] >= 23:
-                    numproducts[2] -= 23
+                if resource.resourses[all_products[2]] >= 23:
+                    resource.resourses[all_products[2]] -= 23
                     wr(balance, stats, 68)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -649,9 +649,9 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1op.png':
-                if numproducts[3] >= 24 and numproducts[2] >= 13:
-                    numproducts[3] -= 24
-                    numproducts[2] -= 13
+                if resource.resourses[all_products[3]] >= 24 and resource.resourses[all_products[2]] >= 13:
+                    resource.resourses[all_products[3]] -= 24
+                    resource.resourses[all_products[2]] -= 13
                     wr(balance, stats, 90)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -662,8 +662,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place1p.png':
-                if numproducts[3] >= 7:
-                    numproducts[3] -= 7
+                if resource.resourses[all_products[3]] >= 7:
+                    resource.resourses[all_products[3]] -= 7
                     wr(balance, stats, 15)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -675,8 +675,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place1s.png':
-                if numproducts[4] >= 25:
-                    numproducts[4] -= 25
+                if resource.resourses[all_products[4]] >= 25:
+                    resource.resourses[all_products[4]] -= 25
                     wr(balance, stats, 54)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -688,8 +688,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place1t.png':
-                if numproducts[5] >= 15:
-                    numproducts[5] -= 15
+                if resource.resourses[all_products[5]] >= 15:
+                    resource.resourses[all_products[5]] -= 15
                     wr(balance, stats, 45)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -701,9 +701,9 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place2cp.png':
-                if numproducts[0] >= 20 and numproducts[3] >= 15:
-                    numproducts[0] -= 20
-                    numproducts[3] -= 15
+                if resource.resourses[all_products[0]] >= 20 and resource.resourses[all_products[3]] >= 15:
+                    resource.resourses[all_products[0]] -= 20
+                    resource.resourses[all_products[3]] -= 15
                     wr(balance, stats, 100)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -714,8 +714,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2o.png':
-                if numproducts[2] >= 61:
-                    numproducts[2] -= 61
+                if resource.resourses[all_products[2]] >= 61:
+                    resource.resourses[all_products[2]] -= 61
                     wr(balance, stats, 160)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -726,8 +726,8 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2p.png':
-                if numproducts[3] >= 10:
-                    numproducts[3] -= 10
+                if resource.resourses[all_products[3]] >= 10:
+                    resource.resourses[all_products[3]] -= 10
                     wr(balance, stats, 26)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -738,9 +738,9 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(2000)
             if offers == 'place2pw.png':
-                if numproducts[6] >= 40 and numproducts[3] >= 10:
-                    numproducts[6] -= 40
-                    numproducts[3] -= 10
+                if resource.resourses[all_products[6]] >= 40 and resource.resourses[all_products[3]] >= 10:
+                    resource.resourses[all_products[6]] -= 40
+                    resource.resourses[all_products[3]] -= 10
                     wr(balance, stats, 100)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -752,8 +752,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place2s.png':
-                if numproducts[4] >= 14:
-                    numproducts[4] -= 14
+                if resource.resourses[all_products[4]] >= 14:
+                    resource.resourses[all_products[4]] -= 14
                     wr(balance, stats, 27)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -765,8 +765,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place2t.png':
-                if numproducts[5] >= 3:
-                    numproducts[5] -= 3
+                if resource.resourses[all_products[5]] >= 3:
+                    resource.resourses[all_products[5]] -= 3
                     wr(balance, stats, 10)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -778,8 +778,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place3s.png':
-                if numproducts[4] >= 34:
-                    numproducts[4] -= 34
+                if resource.resourses[all_products[4]] >= 34:
+                    resource.resourses[all_products[4]]
                     wr(balance, stats, 70)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -791,8 +791,8 @@ def main():
                     pygame.time.wait(2000)
 
             if offers == 'place3t.png':
-                if numproducts[5] >= 16:
-                    numproducts[5] -= 16
+                if resource.resourses[all_products[5]] >= 16:
+                    resource.resourses[all_products[5]] -= 16
                     wr(balance, stats, 34)
                     offers = random.choice(ofer)
                     dis.blit(load_image('place_done.png'), kords)
@@ -820,10 +820,6 @@ def main():
                 f.write(f'{offers2}\n')
                 f.write(offers)
                 f.close()
-            f = open("inventory_.txt", 'w')
-            f.write(
-                f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}')
-            f.close()
             is_buy1 = False
             is_buy2 = False
             is_buy3 = False
