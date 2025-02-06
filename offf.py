@@ -1,7 +1,6 @@
 import pygame
 import random
-from load_image import load_image, Field, Inventory, Animal_House, resource, Hero, Lake, safe_resourses, Settings, \
-    Information, Market, Offer
+from load_image import load_image, Field, Inventory, Animal_House, resource, Hero, Lake, safe_resourses, Settings, Information, Market, Offer, AnimatedSprite
 
 pygame.init()
 
@@ -115,13 +114,40 @@ def main():
     is_buy1 = False
     is_buy2 = False
     is_buy3 = False
-    level1 = True
-    level2 = False
-    level3 = False
-    level4 = False
-    level5 = False
-    level6 = False
-    level7 = False
+    with open('levels.txt', 'r', encoding='utf-8') as f_in:
+        levels = f_in.readlines()
+    levels = "".join(levels)
+    levels = levels.split()
+    print(levels)
+    if levels[0] == 'True':
+        level1 = True
+    else:
+        level1 = False
+    if levels[1] == 'True':
+        level2 = True
+    else:
+        level2 = False
+    if levels[2] == 'True':
+        level3 = True
+    else:
+        level3 = False
+    if levels[3] == 'True':
+        level4 = True
+    else:
+        level4 = False
+    if levels[4] == 'True':
+        level5 = True
+    else:
+        level5 = False
+    if levels[5] == 'True':
+        level6 = True
+    else:
+        level6 = False
+    if levels[6] == 'True':
+        level7 = True
+    else:
+        level7 = False
+    levels1 = [level1, level2, level3, level4, level5, level6, level7]
     bar = '5_8bar.png'
     bar1 = 5
 
@@ -170,6 +196,8 @@ def main():
         resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
 
     while run:
+        is_locked = {0: level1, 1: level1, 2: level1, 3: level2, 4: level3, 5: level4, 6: level5, 'chik': level6,
+                     'cow': level7}
         pygame.mixer.music.set_volume(volume0)
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()
@@ -240,12 +268,40 @@ def main():
                 is_inventory = False
                 is_cow_house = False
                 is_chiken_house = True
+            elif not is_locked['chik'] and balance >= 120 and chiken_house_rect.collidepoint(pygame.mouse.get_pos()):
+                level6 = True
+                f = open("balance.txt", 'w')
+                f.write(str(balance - 120))
+                f.close()
+                f = open("levels.txt", 'w')
+                f.write(f'{str(level1)}\n')
+                f.write(f'{str(level2)}\n')
+                f.write(f'{str(level3)}\n')
+                f.write(f'{str(level4)}\n')
+                f.write(f'{str(level5)}\n')
+                f.write(f'{str(level6)}\n')
+                f.write(f'{str(level7)}\n')
+                f.close()
             if cow_house_rect.collidepoint(pygame.mouse.get_pos()) and is_locked['cow']:
                 # print('yes')
                 gameplay = False
                 is_inventory = False
                 is_chiken_house = False
                 is_cow_house = True
+            elif not is_locked['cow'] and balance >= 170 and cow_house_rect.collidepoint(pygame.mouse.get_pos()):
+                level7 = True
+                f = open("balance.txt", 'w')
+                f.write(str(balance - 170))
+                f.close()
+                f = open("levels.txt", 'w')
+                f.write(f'{str(level1)}\n')
+                f.write(f'{str(level2)}\n')
+                f.write(f'{str(level3)}\n')
+                f.write(f'{str(level4)}\n')
+                f.write(f'{str(level5)}\n')
+                f.write(f'{str(level6)}\n')
+                f.write(f'{str(level7)}\n')
+                f.close()
 
         # отображение всего на карте
         dis.fill('black')
@@ -276,11 +332,13 @@ def main():
         # river_count += 1
         # dis.blit(river[river_count // 20], (fon_x, fon_y))
 
-        if not is_locked['chik']:
+        if not is_locked['chik'] and gameplay:
             dis.blit(load_image('lock2.png'), chiken_house_rect)
+            dis.blit(font1.render(str(120), 1, (0, 0, 0)), chiken_house_rect)
 
-        if not is_locked['cow']:
+        if not is_locked['cow'] and gameplay:
             dis.blit(load_image('lock2.png'), cow_house_rect)
+            dis.blit(font1.render(str(170), 1, (0, 0, 0)), cow_house_rect)
 
         dis.blit(lake, lake_rect)
         if is_settings:
@@ -307,7 +365,6 @@ def main():
 
         if is_info:
             dis.blit(load_image('info.png'), (60, 30))
-            dis.blit(load_image('coin.png'), (dis_x - 630, 50))
             dis.blit(load_image('button_stats_market.png'), (dis_x - 1800, 50))
             dis.blit(load_image('button_steps.png'), (dis_x - 1800, 350))
             dis.blit(font1.render(str(steps), 1, (0, 0, 0)), (dis_x - 1250, 425))
@@ -372,13 +429,18 @@ def main():
         if is_inventory:
             dis.blit(load_image('inventory.png'), (0, 0))
             inventory.render(dis)
+            is_locked = {0: level1, 1: level1, 2: level1, 3: level2, 4: level3, 5: level4, 6: level5, 'chik': level6,
+                         'cow': level7}
             for x in range(inventory.width):
                 for y in range(inventory.height):
                     try:
                         dis.blit(load_image(plants_images[x + y * inventory.width]), (
                             x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
                         if not is_locked[x + y * inventory.width]:
+                            print(is_locked)
                             dis.blit(load_image('lock.png'), (
+                                x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
+                            dis.blit(font1.render(str(70), 1, (0, 0, 0)), (
                                 x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
                     except IndexError:
                         pass
@@ -390,6 +452,29 @@ def main():
                 r = is_locked[r]
                 if inventory.get_click(pygame.mouse.get_pos()) and r:
                     main_plant = inventory.get_click(pygame.mouse.get_pos())
+                elif not r and inventory.get_click(pygame.mouse.get_pos()) and balance >= 70:
+                    if inventory.get_cell(pygame.mouse.get_pos())[0] + inventory.get_cell(pygame.mouse.get_pos())[1] * inventory.width == 3:
+                        level2 = True
+                    elif inventory.get_cell(pygame.mouse.get_pos())[0] + inventory.get_cell(pygame.mouse.get_pos())[1] * inventory.width == 4:
+                        level3 = True
+                    elif inventory.get_cell(pygame.mouse.get_pos())[0] + inventory.get_cell(pygame.mouse.get_pos())[1] * inventory.width == 5:
+                        level4 = True
+                    elif inventory.get_cell(pygame.mouse.get_pos())[0] + inventory.get_cell(pygame.mouse.get_pos())[1] * inventory.width == 6:
+                        level5 = True
+                    f = open("balance.txt", 'w')
+                    f.write(str(balance - 70))
+                    f.close()
+                    f = open("levels.txt", 'w')
+                    f.write(f'{str(level1)}\n')
+                    f.write(f'{str(level2)}\n')
+                    f.write(f'{str(level3)}\n')
+                    f.write(f'{str(level4)}\n')
+                    f.write(f'{str(level5)}\n')
+                    f.write(f'{str(level6)}\n')
+                    f.write(f'{str(level7)}\n')
+                    f.close()
+
+
         if is_buy1 or is_buy2 or is_buy3:
             if is_buy1:
                 kords = (dis_x - 1550, -200)
@@ -947,6 +1032,10 @@ def main():
 
         pygame.display.flip()
         clock.tick(FPS)
+    for i in resource.resourses:
+        print(f'{i}: {resource.resourses[i]}')
+    print(statics)
+    safe_resourses(resource.resourses)
     pygame.quit()
 
 
