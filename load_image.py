@@ -1,6 +1,26 @@
 import pygame
 import os
 import sys
+
+class Hero(pygame.sprite.Sprite):
+    def __init__(self, group, pos):
+        super().__init__(group)
+        self.image = load_image("player.png")
+        self.rect = self.image.get_rect()
+        # вычисляем маску для эффективного сравнения
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(pos[0], pos[1])
+
+    def update(self, pos, obj):
+        self.rect.x += pos[0]
+        self.rect.y += pos[1]
+        try:
+            if pygame.sprite.spritecollideany(self, obj):
+                self.rect.x -= pos[0]
+                self.rect.y -= pos[1]
+        except TypeError:
+            pass
+
 class Resours:
     def __init__(self, resourses):
         self.resourses = resourses
@@ -167,6 +187,55 @@ class Offer(Board):
 class Information(Board):
     def __init__(self, width, height):
         super().__init__(width, height)
+class Animal_House(Board):
+    # создание поля
+    def __init__(self, width, height, name, image, first_image):
+        super().__init__(width, height)
+        self.board = [[Animal(name, 2, image, first_image=first_image) for i in range(self.height)] for _
+                      in
+                      range(self.width)]
+        # значения по умолчанию
+        self.left = 10
+        self.top = 10
+        self.cell_size_x = 30
+        self.cell_size_y = 30
+
+    def get_click(self, mouse_pos):
+        cell = self.get_cell(mouse_pos)
+        if cell:
+            return self.on_click(cell)
+
+    def render(self, screen):
+        for y in range(self.height):
+            for x in range(self.width):
+                pygame.draw.rect(screen, pygame.Color("black"),
+                                 (x * self.cell_size_x + self.left, y * self.cell_size_y + self.top,
+                                  self.cell_size_x, self.cell_size_y), 4)
+
+    def on_click(self, cell):
+        ch = self.board[cell[0]][cell[1]]
+        if ch.count > ch.time * ch.FPS:
+            ch.image = ch.second_image
+            ch.count = 0
+
+
+class Animal:
+    def __init__(self, name, time, image=None, count=0, first_image=None, FPS=60):
+        self.name = name
+        self.second_image = image
+        self.count = (time - 1) * FPS
+        self.time = time
+        self.first_image = first_image
+        self.image = first_image
+        self.isGrow = True
+        self.FPS = FPS
+
+    def set_time(self):
+        if self.count // self.FPS >= self.time:
+            self.image = self.second_image
+            self.isGrow = False
+            return True
+        return False
 
 resources = {'carrot': 0,'corn': 0,'cucumber': 0,'pumpkin': 0,'sunflower': 0,'tomato': 0,'wheap': 0,'egg': 0}
 resource = Resours(resources)
