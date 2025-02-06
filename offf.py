@@ -175,17 +175,6 @@ def main():
                  'cow': level7}
 
     while run:
-        with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
-            inventory1 = f_in.readlines()
-        inventory1 = "".join(inventory1)
-        inventory1 = inventory1.split('&')
-        products1 = []
-        numproducts = []
-        for i in inventory1:
-            resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
-        for i in inventory1:
-            products1.append(i.split('=')[0])
-            numproducts.append(int(i.split('=')[1]))
         pygame.mixer.music.set_volume(volume0)
         with open('balance.txt', 'r', encoding='utf-8') as f_in:
             balance = f_in.readlines()
@@ -833,7 +822,7 @@ def main():
                 f.close()
             f = open("inventory_.txt", 'w')
             f.write(
-                f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}&{products1[7]}={numproducts[7]}&{products1[8]}={numproducts[8]}')
+                f'{products1[0]}={numproducts[0]}&{products1[1]}={numproducts[1]}&{products1[2]}={numproducts[2]}&{products1[3]}={numproducts[3]}&{products1[4]}={numproducts[4]}&{products1[5]}={numproducts[5]}&{products1[6]}={numproducts[6]}')
             f.close()
             is_buy1 = False
             is_buy2 = False
