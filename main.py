@@ -1,5 +1,5 @@
 import pygame
-from load_image import load_image, Field, Inventory, Animal_House, resource, Hero
+from load_image import load_image, Field, Inventory, Animal_House, resource, Hero, Lake, safe_resourses
 
 pygame.init()
 
@@ -7,11 +7,11 @@ pygame.init()
 def main():
     wheat = ['wheap', 'wheap/wheat_2.png', 'wheap/wheat_1.png', 3, 'wheap/wheap_grains.png']
     carrot = ['carrot', 'carrot/carrot_1.png', 'carrot/carrot_2.png', 5, 'carrot/carrot_sprout.png']
-    corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 5, 'corn/corn.png']
-    pumpkin = ['pumpkin', 'pumpkin/pumpkin2.png', 'pumpkin/pumpkin1.png', 5, 'pumpkin/pumpkin.png']
-    sunflower = ['sunflower', 'sunflower/sunflower2.png', 'sunflower/sunflower1.png', 5, 'sunflower/sunflower.png']
-    tomato = ['tomato', 'tomato/tomato2.png', 'tomato/tomato1.png', 5, 'tomato/tomato.png']
-    cucumber = ['cucumber', 'cucumber/cucumber2.png', 'cucumber/cucumber1.png', 5, 'cucumber/cucumber.png']
+    corn = ['corn', 'corn/corn2.png', 'corn/corn1.png', 7, 'corn/corn.png']
+    pumpkin = ['pumpkin', 'pumpkin/pumpkin2.png', 'pumpkin/pumpkin1.png', 9, 'pumpkin/pumpkin.png']
+    sunflower = ['sunflower', 'sunflower/sunflower2.png', 'sunflower/sunflower1.png', 11, 'sunflower/sunflower.png']
+    tomato = ['tomato', 'tomato/tomato2.png', 'tomato/tomato1.png', 13, 'tomato/tomato.png']
+    cucumber = ['cucumber', 'cucumber/cucumber2.png', 'cucumber/cucumber1.png', 15, 'cucumber/cucumber.png']
 
     plants_for_inventory = [wheat.copy(), carrot.copy(), corn.copy(), pumpkin.copy(), sunflower.copy(), tomato.copy(),
                             cucumber.copy()]
@@ -28,7 +28,9 @@ def main():
 
     clock = pygame.time.Clock()
     run = True
-    FPS = 60
+    FPS = 30
+
+    statics = {'carrot': 0, 'corn': 0, 'cucumber': 0, 'pumpkin': 0, 'sunflower': 0, 'tomato': 0, 'wheap': 0, 'egg': 0, 'milk': 0}
 
     infoObject = pygame.display.Info()
     dis_x = infoObject.current_w
@@ -63,9 +65,10 @@ def main():
     real_inventory = Inventory(8, 4, plants_for_inventory)
     real_inventory.set_view(10, 10, 238, 265)
 
-    player_group = pygame.sprite.Group()
-    tiles_group = pygame.sprite.Group()
-    hero = Hero(player_group, (player_x, player_y))
+    all_sprites = pygame.sprite.Group()
+
+
+    hero = Hero(all_sprites, (player_x, player_y))
 
     gameplay = True
     is_inventory = False
@@ -73,11 +76,33 @@ def main():
     is_real_inventory = False
     is_cow_house = False
 
+    # with open('offers.txt', 'r', encoding='utf-8') as f_in:
+    #     ofer = f_in.readlines()
+    # ofer = "".join(ofer)
+    # ofer = ofer.split()
+
+    # print(ofer)
+    with open('inventory_.txt', 'r', encoding='utf-8') as f_in:
+        inventory1 = f_in.readlines()
+    inventory1 = "".join(inventory1)
+    inventory1 = inventory1.split('&')
+    for i in inventory1:
+        resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
+
+    lake_rect = pygame.rect.Rect(2000 + fon_x, 1000 + fon_y, 1000, 1000)
+    lake = load_image('river/river1.png')
+    lakee = Lake(all_sprites, lake_rect)
+
+    is_locked = {0: True, 1: True, 2: True, 3: False, 4: False, 5: False, 6: False, 'chik': False, 'cow': False}
+
     while run:
         # переменные, которые нужно изменять во время игры
         chiken_house_rect = pygame.rect.Rect(125 + fon_x, 760 + fon_y, 500, 500)
         cow_house_rect = pygame.rect.Rect(125 + fon_x, 1500 + fon_y, 650, 600)
+        lake_rect = pygame.rect.Rect(2000 + fon_x, 1000 + fon_y, 1000, 1000)
         field.set_view(60 + fon_x, 50 + fon_y, 65, 67)
+        lakee.set_rect(lake_rect)
+
         count += 1
         player_speed = 20
 
@@ -85,37 +110,45 @@ def main():
 
         # ходьба игрока
         if key[pygame.K_LSHIFT] and gameplay:
-            player_speed = 7
+            player_speed = 30
         if key[pygame.K_w] and gameplay:
             if dis_y // 2 - 100 > hero.rect.y and fon_y <= 0:
                 fon_y += player_speed
+                if hero.is_col(lakee):
+                    fon_y -= player_speed
             elif hero.rect.y > 0:
-                hero.update((0, -player_speed), None)
+                hero.update((0, -player_speed), lakee)
         if key[pygame.K_s] and gameplay:
             if dis_y // 2 + 100 < hero.rect.y and fon_y >= -(2160 - dis_y):
                 fon_y -= player_speed
+                if hero.is_col(lakee):
+                    fon_y += player_speed
             elif hero.rect.y < 2060 + fon_y:
-                hero.update((0, player_speed), None)
+                hero.update((0, player_speed), lakee)
         if key[pygame.K_d] and gameplay:
             if dis_x // 2 + 100 < hero.rect.x and fon_x >= -(3840 - dis_x):
                 fon_x -= player_speed
+                if hero.is_col(lakee):
+                    fon_x += player_speed
             elif hero.rect.x < 3780 + fon_x:
-                hero.update((player_speed, 0), None)
+                hero.update((player_speed, 0), lakee)
         if key[pygame.K_a] and gameplay:
             if dis_x // 2 - 100 > hero.rect.x and fon_x <= 0:
                 fon_x += player_speed
+                if hero.is_col(lakee):
+                    fon_x -= player_speed
             elif hero.rect.x > 0:
-                hero.update((-player_speed, 0), None)
+                hero.update((-player_speed, 0), lakee)
 
         # отловка нажатий на дoма зверей
         if pygame.mouse.get_pressed()[0] and gameplay:
-            if chiken_house_rect.collidepoint(pygame.mouse.get_pos()):
+            if chiken_house_rect.collidepoint(pygame.mouse.get_pos()) and is_locked['chik']:
                 # print('yes')
                 gameplay = False
                 is_inventory = False
                 is_cow_house = False
                 is_chiken_house = True
-            if cow_house_rect.collidepoint(pygame.mouse.get_pos()):
+            if cow_house_rect.collidepoint(pygame.mouse.get_pos()) and is_locked['cow']:
                 # print('yes')
                 gameplay = False
                 is_inventory = False
@@ -138,7 +171,7 @@ def main():
                 plant.set_time()
                 plant.count += 1
 
-        player_group.draw(dis)
+        all_sprites.draw(dis)
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
 
         # отображение реки
@@ -147,7 +180,13 @@ def main():
         # river_count += 1
         # dis.blit(river[river_count // 20], (fon_x, fon_y))
 
-        pygame.draw.rect(dis, pygame.Color("white"), cow_house_rect, 1)
+        if not is_locked['chik']:
+            dis.blit(load_image('lock2.png'), chiken_house_rect)
+
+        if not is_locked['cow']:
+            dis.blit(load_image('lock2.png'), cow_house_rect)
+
+        dis.blit(lake, lake_rect)
 
         # отображение и инициализация курятника
         if is_chiken_house:
@@ -208,11 +247,17 @@ def main():
                     try:
                         dis.blit(load_image(plants_images[x + y * inventory.width]), (
                             x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
+                        if not is_locked[x + y * inventory.width]:
+                            dis.blit(load_image('lock.png'), (
+                                x * inventory.cell_size_x + inventory.left, y * inventory.cell_size_y + inventory.top))
                     except IndexError:
                         pass
             # инициализация нажатий в инвенторе
             if pygame.mouse.get_pressed()[0]:
-                if inventory.get_click(pygame.mouse.get_pos()):
+                r = inventory.get_cell(pygame.mouse.get_pos())
+                r = r[0] + r[1] * inventory.width
+                r = is_locked[r]
+                if inventory.get_click(pygame.mouse.get_pos()) and r:
                     main_plant = inventory.get_click(pygame.mouse.get_pos())
 
         # отловка нажатий на поле
@@ -225,6 +270,7 @@ def main():
             print(pl)
             if pl and pl[0] and pl[1]:
                 plants[pl[1]] = pl[0]
+                statics[pl[0].name] += 1
 
         # отображение реал инвенторя
         if is_real_inventory:
@@ -256,6 +302,9 @@ def main():
             if event.type == pygame.QUIT:
                 for i in resource.resourses:
                     print(f'{i}: {resource.resourses[i]}')
+                print(statics)
+                safe_resourses(resource.resourses)
+
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and gameplay and main_plant:
                 pos = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])

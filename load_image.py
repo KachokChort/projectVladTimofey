@@ -3,6 +3,38 @@ import os
 import sys
 
 
+def load_image(name, colorkey=None):
+    fullname = os.path.join('images', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    # if colorkey is not None:
+    #     # image = image.convert()
+    #     if colorkey == -1:
+    #         colorkey = image.get_at((0, 0))
+    #     image.set_colorkey(colorkey)
+    # else:
+    #     image = image.convert_alpha()
+    return image
+
+
+class Lake(pygame.sprite.Sprite):
+    image = load_image("river/river1.png")
+
+    def __init__(self, all_sprites, rect):
+        super().__init__(all_sprites)
+        self.image = Lake.image
+        self.rect = rect
+        # вычисляем маску для эффективного сравнения
+        self.mask = pygame.mask.from_surface(self.image)
+        # располагаем горы внизу
+
+    def set_rect(self, rect):
+        self.rect = rect
+
+
 class Hero(pygame.sprite.Sprite):
     def __init__(self, group, pos):
         super().__init__(group)
@@ -16,33 +48,20 @@ class Hero(pygame.sprite.Sprite):
         self.rect.x += pos[0]
         self.rect.y += pos[1]
         try:
-            if pygame.sprite.spritecollideany(self, obj):
+            print(pygame.sprite.collide_mask(self, obj))
+            if pygame.sprite.collide_mask(self, obj):
                 self.rect.x -= pos[0]
                 self.rect.y -= pos[1]
         except TypeError:
             pass
 
+    def is_col(self, obj):
+        return bool(pygame.sprite.collide_mask(self, obj))
+
 
 class Resours:
     def __init__(self, resourses):
         self.resourses = resourses
-
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join('images', name)
-    # если файл не существует, то выходим
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    if colorkey is not None:
-        # image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
-    return image
 
 
 class Board:
@@ -122,7 +141,7 @@ class Field(Board):
 
 
 class Plant:
-    def __init__(self, screen, name, rect, time, id, image=None, count=0, first_image=None, FPS=60):
+    def __init__(self, screen, name, rect, time, id, image=None, count=0, first_image=None, FPS=30):
         self.screen = screen
         self.name = name
         self.rect = rect
@@ -193,10 +212,10 @@ class Animal_House(Board):
 
 
 class Animal:
-    def __init__(self, name, time, image=None, count=0, first_image=None, FPS=60):
+    def __init__(self, name, time, image=None, count=0, first_image=None, FPS=30):
         self.name = name
         self.second_image = image
-        self.count = (time - 1) * FPS
+        self.count = (time) * FPS
         self.time = time
         self.first_image = first_image
         self.image = first_image
@@ -213,3 +232,12 @@ class Animal:
 
 resources = {'carrot': 0, 'corn': 0, 'cucumber': 0, 'pumpkin': 0, 'sunflower': 0, 'tomato': 0, 'wheap': 0, 'egg': 0, 'milk': 0}
 resource = Resours(resources)
+
+
+def safe_resourses(resource):
+    data = []
+    for i in resource:
+        data.append(f'{i}={resource[i]}')
+    data = '&'.join(data)
+    with open('inventory_.txt', 'w') as f:
+        f.write(data)
