@@ -12,6 +12,7 @@ def wr(ba, stats, bal):
     f.write(str(ba + bal))
     f.close()
 def main():
+
     pygame.mixer.music.load('music_fon.mp3')
     pygame.mixer.music.play(-1)
     volume0 = 0.3
@@ -80,11 +81,12 @@ def main():
     offer2.set_view(528, 516, 720, 60)
     offer3 = Offer(1, 1)
     offer3.set_view(528, 616, 720, 60)
-
+    start = Settings(1, 1)
+    start.set_view(700, 280, 516, 280)
     real_inventory = Inventory(8, 4, plants_for_inventory)
     real_inventory.set_view(10, 10, 238, 265)
 
-    gameplay = True
+    gameplay = False
     is_inventory = False
     is_settings = False
     is_info = False
@@ -208,7 +210,9 @@ def main():
 
         dis.blit(player, (player_x, player_y))
         dis.blit(load_image(main_plant[4]), (dis_x - 270, -50))
-
+        if not gameplay:
+            dis.blit(load_image('market.png'), (0, 0))
+            dis.blit(load_image('start_game.png'), (700, 280))
         if is_inventory:
             dis.blit(load_image('inventory.png'), (0, 0))
             inventory.render(dis)
@@ -793,6 +797,8 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_b and not is_real_inventory and gameplay:
                 gameplay = False
                 is_real_inventory = True
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not gameplay:
+                gameplay = True
 
         pygame.display.flip()
         clock.tick(FPS)
