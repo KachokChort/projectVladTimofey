@@ -225,7 +225,7 @@ def main():
         key = pygame.key.get_pressed()
 
         if key[pygame.K_LSHIFT] and gameplay:
-            player_speed = 7
+            player_speed = 30
         if (key[pygame.K_w] or key[pygame.K_UP]) and gameplay:
             is_go = True
             if dis_y // 2 - 100 > hero.rect.y and fon_y <= 0:
