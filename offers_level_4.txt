@@ -24,3 +24,4 @@ place3s.png
 place1t.png
 place2t.png
 place3t.png
+placeegg.png

@@ -27,3 +27,4 @@ place3t.png
 place1o.png
 place1op.png
 place2o.png
+placemilk.png
