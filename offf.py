@@ -1011,7 +1011,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market and stas:
                 if offer3.f(pygame.mouse.get_pos()):
                     is_buy3 = True
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not gameplay:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not gameplay and not stas:
                 gameplay = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and is_info:
                 running = False
