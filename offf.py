@@ -195,6 +195,8 @@ def main():
     for i in inventory1:
         resource.resourses[i.split('=')[0]] = int(i.split('=')[1])
 
+    is_go = False
+    
     while run:
         is_locked = {0: level1, 1: level1, 2: level1, 3: level2, 4: level3, 5: level4, 6: level5, 'chik': level6,
                      'cow': level7}
@@ -225,6 +227,7 @@ def main():
         if key[pygame.K_LSHIFT] and gameplay:
             player_speed = 7
         if (key[pygame.K_w] or key[pygame.K_UP]) and gameplay:
+            is_go = True
             if dis_y // 2 - 100 > hero.rect.y and fon_y <= 0:
                 fon_y += player_speed
                 steps += 1
@@ -233,6 +236,7 @@ def main():
             elif hero.rect.y > 0:
                 hero.update((0, -player_speed), lakee)
         if (key[pygame.K_s] or key[pygame.K_DOWN]) and gameplay:
+            is_go = True
             if dis_y // 2 + 100 < hero.rect.y and fon_y >= -(2160 - dis_y):
                 fon_y -= player_speed
                 steps += 1
@@ -241,6 +245,7 @@ def main():
             elif hero.rect.y < 2060 + fon_y:
                 hero.update((0, player_speed), lakee)
         if (key[pygame.K_d] or key[pygame.K_RIGHT]) and gameplay:
+            is_go = True
             if dis_x // 2 + 100 < hero.rect.x and fon_x >= -(3840 - dis_x):
                 fon_x -= player_speed
                 steps += 1
@@ -249,6 +254,7 @@ def main():
             elif hero.rect.x < 3780 + fon_x:
                 hero.update((player_speed, 0), lakee)
         if (key[pygame.K_a] or key[pygame.K_LEFT]) and gameplay:
+            is_go = True
             if dis_x // 2 - 100 > hero.rect.x and fon_x <= 0:
                 fon_x += player_speed
                 steps += 1
@@ -256,6 +262,12 @@ def main():
                     fon_x -= player_speed
             elif hero.rect.x > 0:
                 hero.update((-player_speed, 0), lakee)
+
+        if is_go:
+            if count % 5 == 0:
+                hero.set_image()
+
+        is_go = False
 
         if not gameplay:
             dis.blit(load_image('market.png'), (0, 0))
