@@ -156,22 +156,22 @@ def main():
             ofer = f_in.readlines()
         ofer = "".join(ofer)
         ofer = ofer.split()
-    elif level2:
+    if level2:
         with open('offers_level_2.txt', 'r', encoding='utf-8') as f_in:
             ofer = f_in.readlines()
         ofer = "".join(ofer)
         ofer = ofer.split()
-    elif level3:
+    if level3:
         with open('offers_level_3.txt', 'r', encoding='utf-8') as f_in:
             ofer = f_in.readlines()
         ofer = "".join(ofer)
         ofer = ofer.split()
-    elif level4:
+    if level4:
         with open('offers_level_4.txt', 'r', encoding='utf-8') as f_in:
             ofer = f_in.readlines()
         ofer = "".join(ofer)
         ofer = ofer.split()
-    elif level5:
+    if level5:
         with open('offers_level_5.txt', 'r', encoding='utf-8') as f_in:
             ofer = f_in.readlines()
         ofer = "".join(ofer)
