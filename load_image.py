@@ -39,6 +39,7 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self, group, pos):
         super().__init__(group)
         self.image = load_image("player.png")
+        self.second_image = load_image("player2.png")
         self.rect = self.image.get_rect()
         # вычисляем маску для эффективного сравнения
         self.mask = pygame.mask.from_surface(self.image)
@@ -57,6 +58,11 @@ class Hero(pygame.sprite.Sprite):
 
     def is_col(self, obj):
         return bool(pygame.sprite.collide_mask(self, obj))
+
+    def set_image(self):
+        im = self.image
+        self.image = self.second_image
+        self.second_image = im
 
 
 class Resours:
