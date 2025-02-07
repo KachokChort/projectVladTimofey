@@ -367,7 +367,7 @@ def main():
             dis.blit(load_image('info.png'), (60, 30))
             dis.blit(load_image('button_stats_market.png'), (dis_x - 1800, 50))
             dis.blit(load_image('button_steps.png'), (dis_x - 1800, 350))
-            dis.blit(load_image('coin.png'), (dis_x - 600, 70))
+            dis.blit(load_image('coin.png'), (dis_x - 600, 100))
             dis.blit(font1.render(str(steps), 1, (0, 0, 0)), (dis_x - 1250, 425))
             print(balance)
             dis.blit(font1.render(str(balance), 1, (0, 0, 0)), (dis_x - 400, 100))
@@ -542,7 +542,6 @@ def main():
                     dis.blit(load_image('place_done.png'), kords)
                     pygame.display.update()
                     pygame.time.wait(2000)
-
                 else:
                     dis.blit(load_image('place_not_done.png'), kords)
                     pygame.display.update()
@@ -1004,11 +1003,14 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market and stas:
                 if offer1.f(pygame.mouse.get_pos()):
                     is_buy1 = True
-                elif offer2.f(pygame.mouse.get_pos()):
-                    is_buy2 = True
-                elif offer3.f(pygame.mouse.get_pos()):
-                    is_buy3 = True
 
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market and stas:
+                if offer2.f(pygame.mouse.get_pos()):
+                    is_buy2 = True
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_market and stas:
+                if offer3.f(pygame.mouse.get_pos()):
+                    is_buy3 = True
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not gameplay:
                 gameplay = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and is_info:
